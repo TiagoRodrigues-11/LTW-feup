@@ -1,0 +1,21 @@
+.container{
+  display: flex;
+  flex-direction: column-reverse;
+  float: right;
+  clear: right;
+}
+
+.item{
+  flex-grow: 1;
+}
+
+.direita{
+  background: orange;
+  width: 30%;
+  height: 300px;
+  margin: auto;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
