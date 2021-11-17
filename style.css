@@ -1,21 +1,45 @@
-.container{
-  display: flex;
-  flex-direction: column-reverse;
-  float: right;
-  clear: right;
-}
-
-.item{
-  flex-grow: 1;
-}
-
-.direita{
-  background: orange;
-  width: 30%;
-  height: 300px;
-  margin: auto;
+html, body, div {
+  width: 99%;
+  height: 99%;
 }
 
 table, th, td {
   border: 1px solid black;
 }
+
+
+.container{
+  display: flex;
+  flex-direction: column;
+}
+
+.buttom{
+  float: right;
+  width: 90%;
+  height: 15%;
+  margin: 5%;
+  text-align: center;
+  line-height: 350%;
+  border-radius: 15%;
+  background: rgb(68, 68, 68);
+  color: white;
+  font-size: xx-large;
+  clear: right;
+}
+
+.fixedLeft {
+  float: left;
+  background: rgb(158, 158, 158);
+  width: 72%;
+  height: 100%;
+  margin-left: 1%;
+}
+
+.fixedRight {
+  float: right;
+  background: rgb(158, 158, 158);
+  width: 25%;
+  height: 100%;
+  clear: right;
+}
+
