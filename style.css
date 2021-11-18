@@ -1,45 +1,102 @@
 html, body, div {
-  width: 99%;
-  height: 99%;
-}
-
-table, th, td {
-  border: 1px solid black;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
 }
 
 
-.container{
+.fixedDown {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  background: rgb(158, 158, 158);
+  width: 100%;
+  height: 15%;
 }
 
-.buttom{
-  float: right;
-  width: 90%;
-  height: 15%;
-  margin: 5%;
+.button {
+  width: 50%;
+  height: 85%;
+  margin: auto;
+  margin-left: 2%;
+  margin-right: 2%;
   text-align: center;
   line-height: 350%;
-  border-radius: 15%;
+  border-radius: 25%;
   background: rgb(68, 68, 68);
   color: white;
-  font-size: xx-large;
-  clear: right;
+  font-size: x-large;
 }
 
-.fixedLeft {
-  float: left;
-  background: rgb(158, 158, 158);
-  width: 72%;
-  height: 100%;
-  margin-left: 1%;
+.fixedUp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(46, 46, 46);
+  width: 100%;
+  height: 85%;
 }
 
-.fixedRight {
+
+.board {
+  background: burlywood;
+  margin: auto auto;
+  width: 95%;
+  height: 90%;
+}
+
+.storageright, .storageleft {
+  border-radius: 25%;
+  background: rgb(201, 131, 90);
+  width: 15%;
+  height: 80%;
+}
+
+.storageright {
   float: right;
-  background: rgb(158, 158, 158);
-  width: 25%;
-  height: 100%;
-  clear: right;
+  margin-right: 2%;
 }
 
+.storageleft {
+  margin-left: 2%;
+  float: left;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
