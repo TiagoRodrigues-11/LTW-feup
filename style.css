@@ -39,8 +39,9 @@ html, body, div {
 
 
 .board {
+  display: flex;
+  align-items: center;
   background: burlywood;
-  margin: auto auto;
   width: 95%;
   height: 90%;
 }
@@ -53,14 +54,36 @@ html, body, div {
 }
 
 .storageright {
-  float: right;
-  margin-right: 2%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
 }
 
 .storageleft {
-  margin-left: 2%;
-  float: left;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
 }
+
+.containers {
+  width: 60%;
+  height: 100%;
+  background:rgb(177, 139, 139);
+}
+
+.containersup, .containersdown {
+  width: 100%;
+  height: 50%;
+
+}
+
+
+.containersup {
+  background: saddlebrown;
+}
+
+.containersdown {
+  background: slateblue;
+}
+
 
 
 /* The Modal (background) */

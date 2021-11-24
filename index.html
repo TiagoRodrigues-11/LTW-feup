@@ -8,7 +8,8 @@
     <head>
         <meta charset="utf-8">
         <title>MANCALA</title>
-        <link rel="stylesheet" href="style.css" type="text/css">        
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="modals.js" defer></script>        
     </head>
 
 
@@ -21,117 +22,80 @@
           <div class="storageright">
 
           </div>
-          <div class="storageleft">
+          <div class="containers">
+            <div class="containersup">
 
+            </div>
+            <div class="containersdown">
+
+            </div>
           </div>
+          <div class="storageleft">
+          </div>
+
         </div>
-
-
-
-
-
 
       </div>
 
       <div class="fixedDown">
 
-          <button id="myBtn" class="button">Login</button>
+        <button id="loginBtn" class="button">Login</button>
 
-          <div id="myModal" class="modal">
+        <div id="loginModal" class="modal">
 
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div>Login Ola</div>
-            </div>
-
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Some text in the Modal..</p>
           </div>
 
-          <button id="myBtn" class="button">Regras</button>
+        </div>
 
-          <div id="myModal" class="modal">
+        <button id="rulesBtn" class="button">Regras</button>
 
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div> Regras </div>
-            </div>
+        <div id="rulesModal" class="modal">
 
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div> Regras </div>
           </div>
 
-          <button id="myBtn" class="button">Pontuação</button>
+        </div>
 
-          <div id="myModal" class="modal">
+        <button id="scoreBtn" class="button">Pontuação</button>
 
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div> Pontuação </div>
-            </div>
+        <div id="scoreModal" class="modal">
 
-          </div>
-          
-          <button id="myBtn" class="button">Comando</button>
-
-          <div id="myModal" class="modal">
-
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div> Comando </div>
-            </div>
-
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div> Pontuação </div>
           </div>
 
-          <button id="myBtn" class="button">Configuração</button>
+        </div>
+        
+        <button id="controllersBtn" class="button">Comando</button>
 
-          <div id="myModal" class="modal">
+        <div id="controllersModal" class="modal">
 
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div> Configuração </div>
-            </div>
-
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div> Comando </div>
           </div>
 
+        </div>
+
+        <button id="settingsBtn" class="button">Configuração</button>
+
+        <div id="settingsModal" class="modal">
+
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div> Configuração </div>
+          </div>
+
+        </div>
 
       </div>
 
-
-
-
-
-
-      <script>
-                  
-        // Get the modal
-        var modal = document.getElementById("myModal");
-
-        // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on the button, open the modal
-        btn.onclick = function() {
-          modal.style.display = "block";
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-          modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-          if (event.target == modal) {
-            modal.style.display = "none";
-          }
-        }
-
-
-      </script>
-
-
-      </body>
-
-
+    </body>
 
 </html>
