@@ -9,8 +9,9 @@ const modal = [
     document.getElementById("loginModal"),
     document.getElementById("rulesModal"),
     document.getElementById("scoreModal"),
-    document.getElementById("settingsModal"),
-    document.getElementById("controllersModal")
+    document.getElementById("controllersModal"),
+    document.getElementById("settingsModal")
+    
 ];
 // Get the button that opens the modal
 
@@ -18,15 +19,20 @@ const btn = [
     document.getElementById("loginBtn"),
     document.getElementById("rulesBtn"),
     document.getElementById("scoreBtn"),
-    document.getElementById("settingsBtn"),
-    document.getElementById("controllersBtn")
+    document.getElementById("controllersBtn"),
+    document.getElementById("settingsBtn")
 ];
 
 // Get the <span> element that closes the modal
 
-var span = document.getElementsByClassName("close")[0];
+const span = [
+    document.getElementsByClassName("close")[0],
+    document.getElementsByClassName("close")[1],
+    document.getElementsByClassName("close")[2],
+    document.getElementsByClassName("close")[3],
+    document.getElementsByClassName("close")[4]
 
-
+];
 
 // When the user clicks on the button, open the modal
 for(let i = 0; i < btn.length; i++){
@@ -38,10 +44,8 @@ for(let i = 0; i < btn.length; i++){
 
 // When the user clicks on <span> (x), close the modal
 
-span.onclick = function() {
-    console.log("SPAN\n");
-    for(let i = 0; i < modal.length; i++) {
-        console.log("span: %d\n", i);
+for(let i = 0; i < span.length; i++) {
+    span[i].onclick = function() {
         modal[i].style.display = "none";
     }
 }
