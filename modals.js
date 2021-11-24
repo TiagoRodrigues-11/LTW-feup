@@ -5,7 +5,7 @@
 
 // Get the modal
 
-let modal = [
+const modal = [
     document.getElementById("loginModal"),
     document.getElementById("rulesModal"),
     document.getElementById("scoreModal"),
@@ -14,7 +14,7 @@ let modal = [
 ];
 // Get the button that opens the modal
 
-let btn = [
+const btn = [
     document.getElementById("loginBtn"),
     document.getElementById("rulesBtn"),
     document.getElementById("scoreBtn"),
@@ -23,14 +23,19 @@ let btn = [
 ];
 
 // Get the <span> element that closes the modal
+
 var span = document.getElementsByClassName("close")[0];
+
+const span = [
+    
+]
 
 
 // When the user clicks on the button, open the modal
 for(let i = 0; i < btn.length; i++){
     btn[i].onclick = function() {
         console.log("btn: %d\n", i);
-        modal[1].style.display = "block";
+        modal[i].style.display = "block";
     }
 }
 
