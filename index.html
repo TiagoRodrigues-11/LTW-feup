@@ -56,7 +56,57 @@
 
           <div class="modal-content">
             <span class="close">&times;</span>
-            <div> Regras </div>
+            <div> <ul>
+
+              <li><h3>Tabuleiro:</h3>
+                <ul>
+                  <li>Cada jogadores controla as cavidades centrais do seu lado
+                    ... bem como o armazém que fica à sua direita
+                  </li>
+                </ul>
+              </li>
+        
+              <li><h3>Peças:</h3>
+                <ul>
+                  <li>As peças denominam-se sementes</li>
+                </ul>
+              </li>
+        
+              <li><h3>Inicio:</h3>
+                <ul>
+                  <li>Os armazens estão vazios</li>
+                  <li>As restantes cavidades têm o mesmo número de sementes</li>
+                </ul>
+              </li>
+        
+              <li><h3>Forma de jogar:</h3>
+                <ul>
+                  <li>Jogadores semeiam de forma alternada a partir de uma das suas cavidades</li>
+                  <li>Termina quando um dos jogadores fica sem sementes</li>
+                </ul>
+              </li>
+        
+              <li><h3>Semear:</h3>
+                <ul>
+                  <li>Escolher uma cavidade, recolher todas as sementes e distribuir pelas cavidades seguintes</li>
+                  <li>Semear no sentido anti-horario</li>
+                  <li>Seu armazem semear tambem </li>
+                  <li>Continuar no lado adversario caso atinja o armazem do adversario, nao semear e continuar no nosso lado</li>
+                  <li>Voltar a jogar se ultima semente for no próprio armazem</li>
+                  <li>Se a ultima semente calhar numa sua cavidade vazia, tranferir para armazem as sementes</li>
+                  <li>Na cavidade oposta (do adversario) e a ultima semente</li>
+                </ul>
+              </li>
+        
+              <li><h3>Terminar:</h3>
+                <ul>
+                  <li>Jogo termina quando um dos jogadores nao pode jogar porque nao tem sementes nas suas cavidades</li>
+                  <li>O outro jogador recolhe sementes das duas cavidades e coloca no seu armazem </li>
+                  <li>Ganha quem tiver mais sementes no seu armazem</li>
+                </ul>
+              </li>
+            </ul>
+           </div>
           </div>
 
         </div>
@@ -65,9 +115,18 @@
 
         <div id="scoreModal" class="modal">
 
-          <div class="modal-content">
+          <div class="modal-content point" >
             <span class="close">&times;</span>
-            <div> Pontuação </div>
+            <table>
+              <tr>
+                <th>Data</th>
+                <th>Pontuação</th>
+              </tr>
+              <tr>
+                <td>12/11/2021</td>
+                <td>25</td>
+              </tr>
+            </table>
           </div>
 
         </div>
@@ -76,10 +135,16 @@
 
         <div id="controllersModal" class="modal">
 
-          <div class="modal-content">
+          <div class="modal-content comandowindow">
             <span class="close">&times;</span>
-            <div> Comando </div>
+            <button class = "comando" type="button" onclick="alert('Tem a certeza que quer começar um novo jogo')">
+              NOVO JOGO
+            </button>
+            <button class = "comando" type="button" onclick="alert('Tem a certeza que quer desistir do jogo')">
+              DESISTIR
+            </button>
           </div>
+
 
         </div>
 

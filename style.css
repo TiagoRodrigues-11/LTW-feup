@@ -102,11 +102,21 @@ html, body, div {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  background-color: #ad7123;
+  margin: 2%; 
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 70%; 
+  margin-left: 15%;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+.point{
+  width: 20%;
+  margin-left: 40%;
 }
 
 /* The Close Button */
@@ -122,4 +132,20 @@ html, body, div {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.comando{
+  display: inline-flex;
+  margin: 2%;
+  margin-top: 2%;
+  margin-left: 20%;
+  text-align: center;
+  font-size: X-LARGE;
+  background-color: antiquewhite;
+}
+
+.comandowindow{
+  width: 20%;
+  height: 20%;
+  margin:auto;
 }
