@@ -29,14 +29,17 @@ var span = document.getElementsByClassName("close")[0];
 // When the user clicks on the button, open the modal
 for(let i = 0; i < btn.length; i++){
     btn[i].onclick = function() {
-        modal[i].style.display = "block";
+        console.log("btn: %d\n", i);
+        modal[1].style.display = "block";
     }
 }
 
 // When the user clicks on <span> (x), close the modal
 
 span.onclick = function() {
+    console.log("SPAN\n");
     for(let i = 0; i < modal.length; i++) {
+        console.log("span: %d\n", i);
         modal[i].style.display = "none";
     }
 }
@@ -47,8 +50,8 @@ span.onclick = function() {
 window.onclick = function(event) {
     for(let i = 0; i < modal.length; i++) {
         if (event.target == modal[i]) {
+            console.log("window: %d\n", i);
             modal[i].style.display = "none";
         }
-    
     }
 }
