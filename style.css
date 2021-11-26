@@ -102,7 +102,7 @@ html, body, div {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #ad7123;
+  background-color: antiquewhite;
   margin: 2%; 
   padding: 20px;
   border: 1px solid #888;
@@ -115,6 +115,10 @@ table, th, td {
 }
 
 .point{
+  background-color: antiquewhite;
+  margin: 2%; 
+  padding: 20px;
+  border: 1px solid #888;
   width: 20%;
   margin-left: 40%;
 }
@@ -137,15 +141,82 @@ table, th, td {
 .comando{
   display: inline-flex;
   margin: 2%;
-  margin-top: 2%;
-  margin-left: 20%;
+  margin-top: 10%;
+  margin-left: 10%;
   text-align: center;
-  font-size: X-LARGE;
-  background-color: antiquewhite;
+  font-size: 20px;
+  background-color: rgb(223, 194, 156);;
+  height: 24%;
+  width: 64%;
 }
 
 .comandowindow{
   width: 20%;
   height: 20%;
   margin:auto;
+  background-color: antiquewhite; 
+  padding: 20px;
+  border: 1px solid #888;
+}
+
+.configuracaowindow{
+  width: 25%;
+  height: 40%;
+  margin:auto;
+  background-color: antiquewhite; 
+  padding: 20px;
+  border: 1px solid #888;
+}
+
+.configurar{
+  font-size: 26px;
+  margin: auto;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  text-align: justify;
+}
+
+.seletor{
+  font-size: large;
+  margin: auto;
+  margin-left: 20%;
+  background-color: rgb(223, 194, 156);
+  margin-bottom: 5%;
+  height: 15%;
+  width: 35%;
+}
+
+.buttonlogin{
+  background-color: rgb(9, 223, 20);
+    font-size: large;
+    width: 20%;
+    height: 6%;
+    margin: inherit;
+    margin-left: 41%;
+    margin-top: 7%;
+}
+
+.login{
+  width: 59%;
+  height: 5%;
+  margin: auto;
+  margin-left: 20%;
+}
+
+.loginNome{
+  font-size: 26px;
+  margin: auto;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  text-align: center;
+}
+
+.backlogin{
+  background-color: antiquewhite;
+  height: 70%;
+  margin: 2%; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 70%; 
+  margin-left: 15%;
 }

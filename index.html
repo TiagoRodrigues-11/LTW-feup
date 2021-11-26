@@ -43,9 +43,14 @@
 
         <div id="loginModal" class="modal">
 
-          <div class="modal-content">
+          <div class="backlogin">
             <span class="close">&times;</span>
-            <p>Some text in the Modal..</p>
+            <p class="loginNome">Username</p>
+            <input type="text" class="login"> 
+            <p class="loginNome">Password</p>
+            <input type="password" class="login">
+            <button class="buttonlogin">Login</button>
+            <input type="checkbox">Remeber me
           </div>
 
         </div>
@@ -115,7 +120,7 @@
 
         <div id="scoreModal" class="modal">
 
-          <div class="modal-content point" >
+          <div class="point" >
             <span class="close">&times;</span>
             <table>
               <tr>
@@ -135,7 +140,7 @@
 
         <div id="controllersModal" class="modal">
 
-          <div class="modal-content comandowindow">
+          <div class="comandowindow">
             <span class="close">&times;</span>
             <button class = "comando" type="button" onclick="alert('Tem a certeza que quer começar um novo jogo')">
               NOVO JOGO
@@ -152,9 +157,20 @@
 
         <div id="settingsModal" class="modal">
 
-          <div class="modal-content">
+          <div class="configuracaowindow">
             <span class="close">&times;</span>
-            <div> Configuração </div>
+            <div> <p class="configurar">Nível de dificuldade </p>
+              <select class="seletor" name="nivel de dificuldade" size=1>
+                <option>Fácil</option>
+                <option>Médio</option>
+                <option>Difícil</option>
+              </select>
+                <p class="configurar"> Modo jogo </p> 
+                  <select class="seletor" name="Modo do Jogo" size=1>
+                    <option>Robô</option>
+                    <option>Adversário</option>
+                  </select>
+            </div>
           </div>
 
         </div>
