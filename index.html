@@ -9,7 +9,8 @@
         <meta charset="utf-8">
         <title>MANCALA</title>
         <link rel="stylesheet" href="style.css" type="text/css">
-        <script src="modals.js" defer></script>        
+        <script src="modals.js" defer></script>
+        <script src="containers.js" defer></script> 
     </head>
 
 
@@ -24,10 +25,11 @@
           </div>
           <div class="containers">
             <div class="containersup">
+              <div id="container"></div>
 
             </div>
             <div class="containersdown">
-
+              <div id="container"></div>
             </div>
           </div>
           <div class="storageleft">
@@ -159,24 +161,26 @@
 
           <div class="configuracaowindow">
             <span class="close">&times;</span>
-            <div> <p class="configurar">Nível de dificuldade </p>
+            <div> 
+              <p class="configurar">Nível de dificuldade </p>
               <select class="seletor" name="nivel de dificuldade" size=1>
                 <option>Fácil</option>
                 <option>Médio</option>
                 <option>Difícil</option>
               </select>
-                <p class="configurar"> Modo jogo </p> 
-                  <select class="seletor" name="Modo do Jogo" size=1>
-                    <option>Robô</option>
-                    <option>Adversário</option>
-                  </select>
+              <p class="configurar"> Modo jogo </p> 
+              <select class="seletor" name="Modo do Jogo" size=1>
+                <option>Robô</option>
+                <option>Adversário</option>
+              </select>
+              <div class="sliderContainer">
+                <p> Número de Buracos </p>
+                <input type="range" min="4" max="8" value="6" id="containerSlider">
+              </div>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </body>
 
 </html>

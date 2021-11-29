@@ -37,7 +37,6 @@ const span = [
 // When the user clicks on the button, open the modal
 for(let i = 0; i < btn.length; i++){
     btn[i].onclick = function() {
-        console.log("btn: %d\n", i);
         modal[i].style.display = "block";
     }
 }
@@ -56,7 +55,6 @@ for(let i = 0; i < span.length; i++) {
 window.onclick = function(event) {
     for(let i = 0; i < modal.length; i++) {
         if (event.target == modal[i]) {
-            console.log("window: %d\n", i);
             modal[i].style.display = "none";
         }
     }
