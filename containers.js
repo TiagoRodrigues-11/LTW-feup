@@ -21,7 +21,7 @@ conSlider.oninput = function() {
 
     for(let i = 0; i < numCon; i++){
         let container = document.createElement("div");
-        container.classList.add("containers");
+        container.classList.add("container");
         conta.appendChild(container);
     }
 }
