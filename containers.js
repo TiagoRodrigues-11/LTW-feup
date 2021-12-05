@@ -22,6 +22,7 @@ class tabuleiro{
             elemento.appendChild(semente);
         }
     }
+    
 }
 
 let conSlider = document.getElementById("containerSlider");
@@ -73,6 +74,14 @@ jogar.onclick = function() {
         this.removeEventListener("click",start, false);
     }
 }
+/*Se houver click as semestes vão semear para a frente e se chegar ao 
+    último então troca de container
+ */
+
+/*
+Ter uma função que verifica se containerUp ou containerDown está vazia
+Se uma dessas estiver então o jogo termina e vêmos as sementes que estão no armazem
+*/
 
 
 
