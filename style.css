@@ -28,6 +28,20 @@ html, body, div {
   font-size: x-large;
 }
 
+.button_jogar{
+  width: 20%;
+  height: 35%;
+  margin: auto;
+  /*margin-left: 2%;
+  margin-right: 2%;*/
+  text-align: center;
+  line-height: 350%;
+  border-radius: 25%;
+  background: rgb(68, 68, 68);
+  color: white;
+  font-size: x-large;
+}
+
 .fixedUp {
   display: flex;
   align-items: center;
@@ -171,7 +185,7 @@ table, th, td {
 
 .configuracaowindow{
   width: 25%;
-  height: 40%;
+  height: 70%;
   margin:auto;
   background-color: antiquewhite; 
   padding: 20px;
@@ -192,7 +206,7 @@ table, th, td {
   margin-left: 20%;
   background-color: rgb(223, 194, 156);
   margin-bottom: 5%;
-  height: 15%;
+  height: 12%;
   width: 35%;
 }
 
@@ -229,4 +243,13 @@ table, th, td {
   border: 1px solid #888;
   width: 70%; 
   margin-left: 15%;
+}
+
+.seed{
+  background-color: brown;
+  width: 25px; 
+  height: 75px;
+  border-radius: 50%;
+  -moz-transform: scaleY(0.4);
+  -webkit-transform: scaleY(0.4);
 }

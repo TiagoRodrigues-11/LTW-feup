@@ -3,18 +3,39 @@
         correta. 
 */
 
-/*
-Acho que sei o que tenho que fazer
-Introduzir os pais e depois os filhos....
-Assim sucessivamente
-Deve funcionar
-*/
+/*class armazem{
+
+}*/
+
+class tabuleiro{
+    constructor(containerId, sementes){
+        this.seeds=sementes;
+        //this.containerId = containerId;
+        this.elemento = document.getElementById("containerId")
+    }
+
+    /*Acho que aqui esta um problema */
+    semear(){
+        for(let i=0; i<this.seeds; i++){
+            let semente = document.createElement("div");
+            semente.classList.add("seed");
+            elemento.appendChild(semente);
+        }
+    }
+}
+
 let conSlider = document.getElementById("containerSlider");
 let contaParentUp = document.getElementById("containersParentUp");
 let contaParentDown = document.getElementById("containersParentDown")
+let jogar = document.getElementById("jogar")
+let semente = document.getElementById("semente");
 
-conSlider.oninput = function() {
-    
+const seeds = semente.value;
+const containerUp = new Array(conSlider.value);
+const containerDown = new Array(conSlider.value);
+
+jogar.onclick = function() {
+    jogar.addEventListener("click",start,false);
     let numCon = conSlider.value;
 
     while(contaParentUp.firstChild) {
@@ -24,15 +45,35 @@ conSlider.oninput = function() {
         contaParentDown.removeChild(contaParentDown.firstChild);
     }
 
+    let ind = 1;
+
     for(let i = 0; i < numCon; i++){
         let container1 = document.createElement("div");
         let container2 = document.createElement("div");
+        container1.id="c"+ind;
+        ind++;
+        container2.id="c"+ind;
+        ind++;
         container1.classList.add("container");
         container2.classList.add("container");
+        containerUp[i] = new tabuleiro(container1.id, seeds);
+        containerDown[i] = new tabuleiro(container2.id, seeds);
         contaParentUp.appendChild(container1);
         contaParentDown.appendChild(container2);
     }
+
+    for(let j = 0; j < numCon; j++){
+        /*Não consigo criar as sementes */
+        containerUp[j].semear();
+    }
+
+    function start(){
+        this.style.opacity = "0";
+        this.style.zIndex = "-1";
+        this.removeEventListener("click",start, false);
+    }
 }
+
 
 
 
