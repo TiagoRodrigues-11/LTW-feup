@@ -21,6 +21,7 @@ class tabuleiro{
             semente.style.left = (15+Math.random(100) * 50) + "%";
             let valueRan = "rotate(" + Math.round(Math.random(1) * 180) + "deg)"
             semente.style.transform = valueRan;
+
             this.elemento.appendChild(semente);
         }
     }
@@ -36,6 +37,14 @@ let semente = document.getElementById("semente");
 const seeds = semente.value;
 const containerUp = new Array(conSlider.value);
 const containerDown = new Array(conSlider.value);
+
+conSlider.onclick = function(){
+    document.getElementById("demo1").innerHTML="Número de Buracos: " + conSlider.value;
+}
+
+semente.onclick = function(){
+    document.getElementById("demo2").innerHTML="Sementes: " + semente.value;
+}
 
 jogar.onclick = function() {
     jogar.addEventListener("click",start,false);
@@ -55,7 +64,6 @@ jogar.onclick = function() {
     for(let i = 0; i < numCon; i++){
         let container1 = document.createElement("div");
         let container2 = document.createElement("div");
-
         container1.id="c"+ind1;
         ind1++;
         container2.id="c"+ind2;
@@ -67,9 +75,10 @@ jogar.onclick = function() {
         contaParentUp.appendChild(container1);
         contaParentDown.appendChild(container2);
 
+
         containerUp[i] = new tabuleiro(container1.id, seeds);
         containerDown[i] = new tabuleiro(container2.id, seeds);
-
+        
     }
 
 
@@ -77,6 +86,8 @@ jogar.onclick = function() {
         /*Não consigo criar as sementes */
         containerUp[j].semear();
         containerDown[j].semear();
+
+
     }
 
     function start(){
