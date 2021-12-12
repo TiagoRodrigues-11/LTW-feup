@@ -1,3 +1,4 @@
+
 html, body, div {
   margin: 0px;
   width: 100%;
@@ -101,8 +102,10 @@ html, body, div {
 }
 
 .container {
-  
-  width: 12.5%;
+
+  position: relative;
+
+  width: 10%;
   height: 40%;
   border-radius: 25px;
   background:chartreuse;
@@ -246,10 +249,14 @@ table, th, td {
 }
 
 .seed{
+
+  position: absolute;
+
   background-color: brown;
-  width: 25px; 
-  height: 75px;
+  border-style: solid;
+  border-width: thin;
+  border-color: black;
+  width: 5%; 
+  height: 20%;
   border-radius: 50%;
-  -moz-transform: scaleY(0.4);
-  -webkit-transform: scaleY(0.4);
 }
