@@ -29,7 +29,7 @@ html, body, div {
   font-size: x-large;
 }
 
-.button_jogar{
+.playButton{
   width: 20%;
   height: 35%;
   margin: auto;
@@ -61,10 +61,15 @@ html, body, div {
   height: 90%;
 }
 
+
+
 .storageright, .storageleft {
+  position: relative;
+  
+  top: 10%;
   border-radius: 25%;
   background: rgb(201, 131, 90);
-  width: 10%;
+  width: 95%;
   height: 80%;
 }
 
@@ -78,13 +83,20 @@ html, body, div {
   margin-right: 2.5%;
 }
 
+
 .containers {
   width: 70%;
   height: 100%;
   background:rgb(177, 139, 139);
 }
 
-.containersup, .containersdown {
+.columnLeft, .columnRight {
+  width: 15%;
+  height: 100%;
+  background: gold;
+}
+
+.rowUp, .rowDown {
   display: flex;
   flex-direction: row;
   
@@ -93,15 +105,15 @@ html, body, div {
 }
 
 
-.containersup {
+.rowUp {
   background: saddlebrown;
 }
 
-.containersdown {
+.rowDown {
   background: slateblue;
 }
 
-.container {
+.hole {
 
   position: relative;
 
@@ -112,6 +124,9 @@ html, body, div {
   margin: auto auto ;
 }
 
+.rowDown > .hole:hover {
+  background: crimson;
+}
 
 /* The Modal (background) */
 .modal {
@@ -215,12 +230,12 @@ table, th, td {
 
 .buttonlogin{
   background-color: rgb(9, 223, 20);
-    font-size: large;
-    width: 20%;
-    height: 6%;
-    margin: inherit;
-    margin-left: 41%;
-    margin-top: 7%;
+  font-size: large;
+  width: 20%;
+  height: 6%;
+  margin: inherit;
+  margin-left: 41%;
+  margin-top: 7%;
 }
 
 .login{
@@ -257,6 +272,6 @@ table, th, td {
   border-width: thin;
   border-color: black;
   width: 5%; 
-  height: 20%;
+  height: 15%;
   border-radius: 50%;
 }

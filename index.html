@@ -10,7 +10,7 @@
         <title>MANCALA</title>
         <link rel="stylesheet" href="style.css" type="text/css">
         <script src="modals.js" defer></script>
-        <script src="containers.js" defer></script> 
+        <script src="gamelogic.js" defer></script>
     </head>
 
 
@@ -20,17 +20,14 @@
 
       <div class="fixedUp">
         <div class="board">
-          <div class="storageright">
-          </div>
+          <div class="columnLeft" id="colPRight"></div>
           <div class="containers">
-            <div class="containersup" id="containersParentUp">
+            <div class="rowUp" id="rowPUp">
             </div>
-            <div class="containersdown" id="containersParentDown">
-              <button id="jogar" class="button_jogar"> Jogar </button>
+            <div class="rowDown" id="rowPDown">
             </div>
           </div>
-          <div class="storageleft">
-          </div>
+          <div class="columnRight" id="colPLeft"></div>
 
         </div>
 
@@ -135,22 +132,8 @@
 
         </div>
         
-        <button id="controllersBtn" class="button">Comando</button>
+        <button id="playBtn" class="button">Jogar</button>
 
-        <div id="controllersModal" class="modal">
-
-          <div class="comandowindow">
-            <span class="close">&times;</span>
-            <button class = "comando" type="button" onclick="alert('Tem a certeza que quer começar um novo jogo')">
-              NOVO JOGO
-            </button>
-            <button class = "comando" type="button" onclick="alert('Tem a certeza que quer desistir do jogo')">
-              DESISTIR
-            </button>
-          </div>
-
-
-        </div>
 
         <button id="settingsBtn" class="button">Configuração</button>
 
@@ -171,9 +154,9 @@
                 <option>Adversário</option>
               </select>
               <p class="configurar" id="demo1"> Número de Buracos: 6 </p> 
-                <input type="range" min="4" max="8" value="6" id="containerSlider">
+                <input type="range" min="4" max="8" value="6" id="holeSlider">
               <p class = "configurar" id="demo2">Sementes: 4</p>
-                <input type="range" min="4" max="10" value="4" id="semente">
+                <input type="range" min="4" max="10" value="4" id="seedSlider">
             </div>
           </div>
         </div>

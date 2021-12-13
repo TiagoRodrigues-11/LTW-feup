@@ -9,7 +9,6 @@ const modal = [
     document.getElementById("loginModal"),
     document.getElementById("rulesModal"),
     document.getElementById("scoreModal"),
-    document.getElementById("controllersModal"),
     document.getElementById("settingsModal")
     
 ];
@@ -19,7 +18,6 @@ const btn = [
     document.getElementById("loginBtn"),
     document.getElementById("rulesBtn"),
     document.getElementById("scoreBtn"),
-    document.getElementById("controllersBtn"),
     document.getElementById("settingsBtn")
 ];
 
@@ -29,9 +27,7 @@ const span = [
     document.getElementsByClassName("close")[0],
     document.getElementsByClassName("close")[1],
     document.getElementsByClassName("close")[2],
-    document.getElementsByClassName("close")[3],
-    document.getElementsByClassName("close")[4]
-
+    document.getElementsByClassName("close")[3]
 ];
 
 // When the user clicks on the button, open the modal
