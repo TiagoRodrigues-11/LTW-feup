@@ -57,8 +57,6 @@ playButton.onclick = function() {
     }
     game = new Game();
     console.log(game);
-
-    
 }
 
 class Hole {
@@ -199,10 +197,29 @@ class Game {
             console.log("Empty hole!");
             return null;
         }
+
+        let seed = 1;
         for(let i = 0; i < nSeed; i++) {
             holeId = this.nextHole(holeId);
+            if(i==nSeed-1 && holeId!=="s1" && holeId!=="s2"){
+                let tmp = this.searchHole(holeId);
+                if(tmp.empty()){
+                    let numSeed=1;
+                    //Adversário
+                    if(this.turn){
+                        //console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
+                        numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
+                        this.searchHole("s2").addSeeds(numSeed);
+                    }else{
+                        //console.log("player");
+                        numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
+                        this.searchHole("s1").addSeeds(numSeed);
+                    }
+                    seed=0;
+                }
+            }
             
-            this.searchHole(holeId).addSeeds(1);
+            this.searchHole(holeId).addSeeds(seed);
 
         }
 
@@ -261,18 +278,17 @@ class Game {
                 }
             }
         }
-
-
+        
         for(let i = 0; i < holeNumber; i++) {
             let holeTemp = this.bottomRow.holes[i];
-            holeTemp.hole.onclick = function() {
-                if(!game.turn && !holeTemp.empty()) {
+                holeTemp.hole.onclick = function() {
+                if(!game.turn && !holeTemp.empty() && !terminate()) {
                     game.seed(holeTemp.id);
                     game.turn = ADVERSARY;
-                }
-                switch(mode) {
-                    case RAND_BOT:
-                        randomBot();
+                    switch(mode) {
+                        case RAND_BOT:
+                            setTimeout(randomBot,1000);
+                    }
                 }
             }
         }
@@ -280,7 +296,29 @@ class Game {
     }
 }
 
+function terminate(){
+    let seed=0;
+    if(game.topRow.noSeeds()){
+        for(let i=0; i<holeNumber; i++){
+            let holeTemp = game.bottomRow.holes[i];
+            seed+=holeTemp.removeSeed();
+        }
+        game.bottomRow.holes[holeNumber].addSeeds(seed);
+        console.log("terminado player com " + game.bottomRow.holes[holeNumber].seedNumber);
+        console.log("terminado adversário com " + game.topRow.holes[holeNumber].seedNumber);
+    }
+    else if(game.bottomRow.noSeeds()){
+        for(let i=0; i<holeNumber; i++){
+            let holeTemp = game.topRow.holes[i];
+            seed+=holeTemp.removeSeed();
+        }
+        game.topRow.holes[holeNumber].addSeeds(seed);
+        console.log("terminado player com " + game.bottomRow.holes[holeNumber].seedNumber);
+        console.log("terminado adversário com " + game.topRow.holes[holeNumber].seedNumber);
+    }
 
+    return game.topRow.noSeeds() || game.bottomRow.noSeeds()
+}
 
 function randomBot() {
     
@@ -295,3 +333,6 @@ function randomBot() {
     }
     return false;
 }
+
+
+
