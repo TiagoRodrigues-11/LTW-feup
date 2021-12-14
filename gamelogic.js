@@ -264,6 +264,13 @@ class Game {
         if(holeId === "s2")
             return this.bottomRow.holes[0].id;
 
+        if(holeId === ("c"+holeNumber) && this.turn)
+            return this.topRow.holes[holeNumber-1].id;
+
+        if(holeId === ("c"+(parseInt(holeNumber)*2)) && !this.turn)
+            return this.bottomRow.holes[0].id;
+            
+
         for(let i = 0; i < holeNumber; i++) {
             if(this.bottomRow.holes[i].id === holeId) {
                 return this.bottomRow.holes[i+1].id;
