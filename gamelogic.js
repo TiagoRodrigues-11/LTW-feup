@@ -210,14 +210,16 @@ class Game {
                     if(tmp.empty()){
                         let numSeed=1;
                         //Adversário
-                        if(this.turn){
-                            //console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
-                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                            this.searchHole("s2").addSeeds(numSeed);
-                        }else{
-                            //console.log("player");
+                        if(this.turn==ADVERSARY){
+                            console.log("adversario")
+                            console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
                             numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
                             this.searchHole("s1").addSeeds(numSeed);
+                        }else{
+                            console.log("player")
+                            console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
+                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
+                            this.searchHole("s2").addSeeds(numSeed);
                         }
                         seed=0;
                     }
@@ -300,6 +302,7 @@ class Game {
         for(let i = 0; i < holeNumber; i++) {
             let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
+                    console.log("click here")
                 if(!game.turn && !holeTemp.empty() && !terminate()) {
                     game.seed(holeTemp.id);
                     if(game.turn){
