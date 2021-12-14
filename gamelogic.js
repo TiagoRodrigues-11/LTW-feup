@@ -201,24 +201,36 @@ class Game {
         let seed = 1;
         for(let i = 0; i < nSeed; i++) {
             holeId = this.nextHole(holeId);
-            if(i==nSeed-1 && holeId!=="s1" && holeId!=="s2"){
-                let tmp = this.searchHole(holeId);
-                if(tmp.empty()){
-                    let numSeed=1;
-                    //Adversário
-                    if(this.turn){
-                        //console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
-                        numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                        this.searchHole("s2").addSeeds(numSeed);
-                    }else{
-                        //console.log("player");
-                        numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                        this.searchHole("s1").addSeeds(numSeed);
+            if(i==nSeed-1){
+                if(this.turn) this.turn=PLAYER;
+                else this.turn=ADVERSARY;
+
+                if(holeId!=="s1" && holeId!=="s2"){
+                    let tmp = this.searchHole(holeId);
+                    if(tmp.empty()){
+                        let numSeed=1;
+                        //Adversário
+                        if(this.turn){
+                            //console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
+                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
+                            this.searchHole("s2").addSeeds(numSeed);
+                        }else{
+                            //console.log("player");
+                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
+                            this.searchHole("s1").addSeeds(numSeed);
+                        }
+                        seed=0;
                     }
-                    seed=0;
+                }
+                else{
+                    if(holeId==="s1"){
+                        this.turn=PLAYER;
+                    }
+                    else if(holeId==="s2"){
+                        this.turn=ADVERSARY;
+                    }
                 }
             }
-            
             this.searchHole(holeId).addSeeds(seed);
 
         }
@@ -273,7 +285,6 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(game.turn && !holeTemp.empty()) {
                         game.seed(holeTemp.id);
-                        game.turn = PLAYER;
                     }
                 }
             }
@@ -284,10 +295,11 @@ class Game {
                 holeTemp.hole.onclick = function() {
                 if(!game.turn && !holeTemp.empty() && !terminate()) {
                     game.seed(holeTemp.id);
-                    game.turn = ADVERSARY;
-                    switch(mode) {
-                        case RAND_BOT:
-                            setTimeout(randomBot,1000);
+                    if(game.turn){
+                        switch(mode) {
+                            case RAND_BOT:
+                                setTimeout(randomBot,1000);
+                        }
                     }
                 }
             }
@@ -328,7 +340,6 @@ function randomBot() {
         let holeTemp = game.topRow.holes[getRandomInt(0, holeNumber-1)];
         if(holeTemp.empty()) continue;
         game.seed(holeTemp.id);
-        game.turn = PLAYER;
         break;
     }
     return false;
