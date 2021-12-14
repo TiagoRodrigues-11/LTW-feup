@@ -202,8 +202,6 @@ class Game {
         for(let i = 0; i < nSeed; i++) {
             holeId = this.nextHole(holeId);
             if(i==nSeed-1){
-                if(this.turn) this.turn=PLAYER;
-                else this.turn=ADVERSARY;
 
                 if(holeId!=="s1" && holeId!=="s2"){
                     let tmp = this.searchHole(holeId);
@@ -214,29 +212,29 @@ class Game {
                             console.log("adversario")
                             console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
                             numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                            this.searchHole("s1").addSeeds(numSeed);
+                            this.searchHole("s2").addSeeds(numSeed);
                         }else{
                             console.log("player")
                             console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
                             numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                            this.searchHole("s2").addSeeds(numSeed);
+                            this.searchHole("s1").addSeeds(numSeed);
                         }
                         seed=0;
                     }
+                    if(this.turn) this.turn=PLAYER;
+                    else this.turn=ADVERSARY;
                 }
-                else{
-                    if(holeId==="s1"){
-                        this.turn=PLAYER;
-                    }
-                    else if(holeId==="s2"){
-                        this.turn=ADVERSARY;
-                    }
+
+                else if(holeId==="s1"){
+                    this.turn=PLAYER;
+                }
+                else if(holeId==="s2"){
+                    this.turn=ADVERSARY;
                 }
             }
-            this.searchHole(holeId).addSeeds(seed);
-
+                
         }
-
+        this.searchHole(holeId).addSeeds(seed);
         return holeId;
     }
 
@@ -343,7 +341,7 @@ function terminate(){
 }
 
 function randomBot() {
-    
+    console.log("aqui adversaro");
     if(game.topRow.noSeeds()) return true;
     let stop = false;
     while(!stop) {
