@@ -22,20 +22,23 @@ let stParentRight   = document.getElementById("colPRight");
 let playButton      = document.getElementById("playBtn");
 let seedSlider      = document.getElementById("seedSlider");
 let holeSlider      = document.getElementById("holeSlider");
-let seedNumber = seedSlider.value, holeNumber = holeSlider.value;
-let mode = RAND_BOT;
+let seedNumber = seedSlider.value;
+let holeNumber = holeSlider.value;
+let seedNumberTemp = seedSlider.value;
+let holeNumberTemp = holeSlider.value;
+let mode = PVP;
 let game = null;
 
 
-
+// HA UM PROBLEMA COM ISTO...
 holeSlider.oninput = function(){
     document.getElementById("demo1").innerHTML="Número de Buracos: " + holeSlider.value;
-    holeNumber = holeSlider.value;
+    holeNumberTemp = holeSlider.value;
 }
 
 seedSlider.oninput = function(){
     document.getElementById("demo2").innerHTML="Sementes: " + seedSlider.value;
-    seedNumber = seedSlider.value;
+    seedNumberTemp = seedSlider.value;
 }
 
 playButton.onclick = function() {
@@ -53,6 +56,8 @@ playButton.onclick = function() {
     while(stParentRight.firstChild) {
         stParentRight.removeChild(stParentRight.firstChild);
     }
+    holeNumber = holeNumberTemp;
+    seedNumber = seedNumberTemp;
     game = new Game();
     console.log(game);
 
@@ -180,6 +185,14 @@ class Row {
         return true;
     }
 
+    index(holeId) {
+        for(let i = 0; i < holeNumber; i++) {
+            if(this.holes[i].id === holeId)
+                return i;
+        }
+        return null;
+    }
+
     elem(holeId) {
         for(let i = 0; i < holeNumber; i++) {
             if(holeId === this.holes[i].id)
@@ -271,14 +284,17 @@ class Game {
         if(mode === PVP) {
             for(let i = 0; i < holeNumber; i++) {
                 let holeTemp = this.topRow.holes[i];
+                
                 holeTemp.hole.onclick = function() {
                     if(game.turn && !holeTemp.empty()) {
+                        let numSeeds  = holeTemp.seedNumber; 
                         let temp = game.seed(holeTemp.id);
                         if(terminate()) decideWinner();
                         if(temp != "s2") {
                             if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
-                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-i-2].removeSeed());
-                                game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i].removeSeed());
+                                let indexTemp = game.bottomRow.index(temp);
+                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-2].removeSeed());
+                                game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i+numSeeds ].removeSeed());
                             }
                             game.turn = PLAYER;
                         }
@@ -292,12 +308,14 @@ class Game {
             let holeTemp = this.bottomRow.holes[i];
             holeTemp.hole.onclick = function() {
                 if(!game.turn && !holeTemp.empty()) {
+                    let numSeeds = holeTemp.seedNumber;
                     let temp = game.seed(holeTemp.id);
                     if(terminate()) decideWinner();
                     if(temp != "s1") {
                         if(game.searchHole(temp).wasEmpty() && game.bottomRow.elem(temp)) {
-                            game.bottomRow.holes[holeNumber].addSeeds(game.topRow.holes[holeNumber-i-2].removeSeed());
-                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.holes[i].removeSeed());
+                            let indexTemp = game.bottomRow.index(temp);
+                            game.bottomRow.holes[holeNumber].addSeeds(game.topRow.holes[holeNumber-indexTemp-1].removeSeed());
+                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.holes[i+numSeeds].removeSeed());
                         }
                         game.turn = ADVERSARY;
                         switch(mode) {
@@ -320,13 +338,15 @@ function randomBot() {
         let i = getRandomInt(0, holeNumber-1);
         let holeTemp = game.topRow.holes[i];
         if(holeTemp.empty()) continue;
+        let numSeeds = holeTemp.seedNumber;
         let temp = game.seed(holeTemp.id);
         if(temp === "s2") {
             setTimeout(randomBot, 1000);
         }
         if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
-            game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-i-2].removeSeed());
-            game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i].removeSeed());
+            let indexTemp = game.bottomRow.index(temp);
+            game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-2].removeSeed());
+            game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i+numSeeds].removeSeed());
         }
         if(terminate()) decideWinner();
         game.turn = PLAYER;
