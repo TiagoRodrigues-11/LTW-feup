@@ -1,11 +1,9 @@
-
-
 /**
  * Get a random number between min, max
  * @param {*} max Int: maximum number 
  * @param {*} min Int: minimum number 
  */
-function getRandomInt(min, max) {
+ function getRandomInt(min, max) {
     return (min + Math.floor(Math.random()*(max+1)));
 }
 
@@ -41,7 +39,7 @@ seedSlider.oninput = function(){
 }
 
 playButton.onclick = function() {
-    
+
 
     while(contaParentUp.firstChild) {
         contaParentUp.removeChild(contaParentUp.firstChild);
@@ -57,6 +55,8 @@ playButton.onclick = function() {
     }
     game = new Game();
     console.log(game);
+
+
 }
 
 class Hole {
@@ -86,9 +86,13 @@ class Hole {
         return !this.seedNumber;
     }
 
+    wasEmpty() {
+        return this.seedNumber == 1;
+    }
+
     addSeeds(seeds) {
         this.seedNumber += seeds;
-        
+
         for(let i = 0; i < seeds;i++) {
             let seed = document.createElement("div");
             seed.classList.add("seed");
@@ -146,18 +150,18 @@ class Row {
                 contaParentUp.insertBefore(container, contaParentUp.firstChild);
             else
                 contaParentDown.appendChild(container);
-            
+
             this.holes.push(new Hole(seedNumber, container.id));
         }
 
         let storageDiv = document.createElement("div");
-    
+
 
         if(this.row) {
             storageDiv.id = "s2";
             storageDiv.classList.add("storageleft"); 
             stParentRight.appendChild(storageDiv);
-            
+
         }
         else {
             storageDiv.id = "s1";
@@ -176,6 +180,14 @@ class Row {
         return true;
     }
 
+    elem(holeId) {
+        for(let i = 0; i < holeNumber; i++) {
+            if(holeId === this.holes[i].id)
+                return true;
+        }
+        return false;
+    }
+
 }
 
 class Game {
@@ -183,7 +195,7 @@ class Game {
         this.bottomRow = new Row(PLAYER);
         this.topRow = new Row(ADVERSARY);
         this.turn = PLAYER;
-        this.play();
+        this.setup();
     }
 
 
@@ -197,44 +209,21 @@ class Game {
             console.log("Empty hole!");
             return null;
         }
-
-        let seed = 1;
         for(let i = 0; i < nSeed; i++) {
             holeId = this.nextHole(holeId);
-            if(i==nSeed-1){
 
-                if(holeId!=="s1" && holeId!=="s2"){
-                    let tmp = this.searchHole(holeId);
-                    if(tmp.empty()){
-                        let numSeed=1;
-                        //Adversário
-                        if(this.turn==ADVERSARY){
-                            console.log("adversario")
-                            console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
-                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                            this.searchHole("s2").addSeeds(numSeed);
-                        }else{
-                            console.log("player")
-                            console.log("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1)));
-                            numSeed+=this.searchHole("c"+(parseInt(holeNumber)*2 - (parseInt(holeId[1],10)-1))).removeSeed();
-                            this.searchHole("s1").addSeeds(numSeed);
-                        }
-                        seed=0;
-                    }
-                    if(this.turn) this.turn=PLAYER;
-                    else this.turn=ADVERSARY;
-                }
-
-                else if(holeId==="s1"){
-                    this.turn=PLAYER;
-                }
-                else if(holeId==="s2"){
-                    this.turn=ADVERSARY;
-                }
+            // Nao semear no storage contrario
+            if(this.turn === PLAYER && holeId === "s2") {
+                holeId = this.nextHole(holeId);
             }
-                
+            if(this.turn === ADVERSARY && holeId === "s1") {
+                holeId = this.nextHole(holeId);
+            }
+
+            this.searchHole(holeId).addSeeds(1);
+
         }
-        this.searchHole(holeId).addSeeds(seed);
+
         return holeId;
     }
 
@@ -264,13 +253,6 @@ class Game {
         if(holeId === "s2")
             return this.bottomRow.holes[0].id;
 
-        if(holeId === ("c"+holeNumber) && this.turn)
-            return this.topRow.holes[holeNumber-1].id;
-
-        if(holeId === ("c"+(parseInt(holeNumber)*2)) && !this.turn)
-            return this.bottomRow.holes[0].id;
-            
-
         for(let i = 0; i < holeNumber; i++) {
             if(this.bottomRow.holes[i].id === holeId) {
                 return this.bottomRow.holes[i+1].id;
@@ -285,73 +267,110 @@ class Game {
         return null;
     }
 
-    play() {
+    setup() {
         if(mode === PVP) {
             for(let i = 0; i < holeNumber; i++) {
                 let holeTemp = this.topRow.holes[i];
                 holeTemp.hole.onclick = function() {
                     if(game.turn && !holeTemp.empty()) {
-                        game.seed(holeTemp.id);
-                    }
-                }
-            }
-        }
-        
-        for(let i = 0; i < holeNumber; i++) {
-            let holeTemp = this.bottomRow.holes[i];
-                holeTemp.hole.onclick = function() {
-                    console.log("click here")
-                if(!game.turn && !holeTemp.empty() && !terminate()) {
-                    game.seed(holeTemp.id);
-                    if(game.turn){
-                        switch(mode) {
-                            case RAND_BOT:
-                                setTimeout(randomBot,1000);
+                        let temp = game.seed(holeTemp.id);
+                        if(terminate()) decideWinner();
+                        if(temp != "s2") {
+                            if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
+                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-i-2].removeSeed());
+                                game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i].removeSeed());
+                            }
+                            game.turn = PLAYER;
                         }
                     }
                 }
             }
         }
-        
+
+        // As vezes da erro aqui no remove seed por causa do ultimo index   ??-2?? estranho da certo mas esta errado
+        for(let i = 0; i < holeNumber; i++) {
+            let holeTemp = this.bottomRow.holes[i];
+            holeTemp.hole.onclick = function() {
+                if(!game.turn && !holeTemp.empty()) {
+                    let temp = game.seed(holeTemp.id);
+                    if(terminate()) decideWinner();
+                    if(temp != "s1") {
+                        if(game.searchHole(temp).wasEmpty() && game.bottomRow.elem(temp)) {
+                            game.bottomRow.holes[holeNumber].addSeeds(game.topRow.holes[holeNumber-i-2].removeSeed());
+                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.holes[i].removeSeed());
+                        }
+                        game.turn = ADVERSARY;
+                        switch(mode) {
+                            case RAND_BOT:
+                                setTimeout(randomBot, 1000);
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    
 }
 
-function terminate(){
-    let seed=0;
-    if(game.topRow.noSeeds()){
-        for(let i=0; i<holeNumber; i++){
-            let holeTemp = game.bottomRow.holes[i];
-            seed+=holeTemp.removeSeed();
-        }
-        game.bottomRow.holes[holeNumber].addSeeds(seed);
-        console.log("terminado player com " + game.bottomRow.holes[holeNumber].seedNumber);
-        console.log("terminado adversário com " + game.topRow.holes[holeNumber].seedNumber);
-    }
-    else if(game.bottomRow.noSeeds()){
-        for(let i=0; i<holeNumber; i++){
-            let holeTemp = game.topRow.holes[i];
-            seed+=holeTemp.removeSeed();
-        }
-        game.topRow.holes[holeNumber].addSeeds(seed);
-        console.log("terminado player com " + game.bottomRow.holes[holeNumber].seedNumber);
-        console.log("terminado adversário com " + game.topRow.holes[holeNumber].seedNumber);
-    }
 
-    return game.topRow.noSeeds() || game.bottomRow.noSeeds()
-}
 
 function randomBot() {
-    console.log("aqui adversaro");
-    if(game.topRow.noSeeds()) return true;
-    let stop = false;
-    while(!stop) {
-        let holeTemp = game.topRow.holes[getRandomInt(0, holeNumber-1)];
+    while(true) {
+        let i = getRandomInt(0, holeNumber-1);
+        let holeTemp = game.topRow.holes[i];
         if(holeTemp.empty()) continue;
-        game.seed(holeTemp.id);
-        break;
+        let temp = game.seed(holeTemp.id);
+        if(temp === "s2") {
+            setTimeout(randomBot, 1000);
+        }
+        if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
+            game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-i-2].removeSeed());
+            game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i].removeSeed());
+        }
+        if(terminate()) decideWinner();
+        game.turn = PLAYER;
+        return;
+    }
+} 
+
+function terminate() {
+    if(game.turn == PLAYER) {
+
+        if(game.topRow.noSeeds()) {
+            let newSeeds = 0;
+            for(let i = 0; i < holeNumber; i++) {
+                newSeeds += game.bottomRow.holes[i].removeSeed();
+            }
+            game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
+            return true;
+        }
+    } else {
+        if(game.bottomRow.noSeeds()) {
+            let newSeeds = 0;
+            for(let i = 0; i < holeNumber; i++) {
+                newSeeds += game.topRow.holes[i].removeSeed();
+            }
+
+            game.topRow.holes[holeNumber].addSeeds(newSeeds);
+            return true;
+        }
+        
     }
     return false;
 }
 
+function decideWinner() {
+    let playerSeeds = game.bottomRow.holes[holeNumber].seedNumber;
+    let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
+    if(playerSeeds > adversarySeeds) {
+        console.log("PLayer won!");
+    } else if (playerSeeds === adversarySeeds) {
+        console.log("Draw!");
+    } else {
+        console.log("Adversary won!");
+    }
 
+    game.turn = null;
+}
