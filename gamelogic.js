@@ -26,7 +26,7 @@ let seedNumber = seedSlider.value;
 let holeNumber = holeSlider.value;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
-let mode = PVP;
+let mode = LVL_1_BOT;
 let game = null;
 
 
@@ -185,6 +185,14 @@ class Row {
         return true;
     }
 
+    hole(holeId) {
+        for(let i = 0; i < holeNumber; i++) {
+            if(this.holes[i].id === holeId)
+                return this.holes[i];
+        }
+        return null;
+    }
+
     index(holeId) {
         for(let i = 0; i < holeNumber; i++) {
             if(this.holes[i].id === holeId)
@@ -287,14 +295,13 @@ class Game {
                 
                 holeTemp.hole.onclick = function() {
                     if(game.turn && !holeTemp.empty()) {
-                        let numSeeds  = holeTemp.seedNumber; 
                         let temp = game.seed(holeTemp.id);
                         if(terminate()) decideWinner();
                         if(temp != "s2") {
-                            if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
-                                let indexTemp = game.bottomRow.index(temp);
-                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-2].removeSeed());
-                                game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i+numSeeds ].removeSeed());
+                            let indexTemp = game.bottomRow.index(temp);
+                            if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp) && !game.bottomRow.holes[holeNumber-indexTemp-1].empty()) {
+                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-1].removeSeed());
+                                game.topRow.holes[holeNumber].addSeeds(game.topRow.hole(temp).removeSeed());
                             }
                             game.turn = PLAYER;
                         }
@@ -303,24 +310,26 @@ class Game {
             }
         }
 
-        // As vezes da erro aqui no remove seed por causa do ultimo index   ??-2?? estranho da certo mas esta errado
         for(let i = 0; i < holeNumber; i++) {
             let holeTemp = this.bottomRow.holes[i];
             holeTemp.hole.onclick = function() {
-                if(!game.turn && !holeTemp.empty()) {
-                    let numSeeds = holeTemp.seedNumber;
+                if(!game.turn && !holeTemp.empty()) {4
+
                     let temp = game.seed(holeTemp.id);
                     if(terminate()) decideWinner();
                     if(temp != "s1") {
-                        if(game.searchHole(temp).wasEmpty() && game.bottomRow.elem(temp)) {
-                            let indexTemp = game.bottomRow.index(temp);
+
+                        let indexTemp = game.bottomRow.index(temp);
+                        if(game.searchHole(temp).wasEmpty() && game.bottomRow.elem(temp) && !game.topRow.holes[holeNumber-indexTemp-1].empty()) {
                             game.bottomRow.holes[holeNumber].addSeeds(game.topRow.holes[holeNumber-indexTemp-1].removeSeed());
-                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.holes[i+numSeeds].removeSeed());
+                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.hole(temp).removeSeed());
                         }
                         game.turn = ADVERSARY;
                         switch(mode) {
                             case RAND_BOT:
-                                setTimeout(randomBot, 1000);
+                                setTimeout(botPlay, 1000);
+                            case LVL_1_BOT:
+                                console.log(bot(null));
                         }
                     }
                 }
@@ -333,30 +342,30 @@ class Game {
 
 
 
-function randomBot() {
+function botPlay(index = null, gameBot = game) {
     while(true) {
         let i = getRandomInt(0, holeNumber-1);
-        let holeTemp = game.topRow.holes[i];
+        if(index != null) i = index;
+        
+        let holeTemp = gameBot.topRow.holes[i];
         if(holeTemp.empty()) continue;
-        let numSeeds = holeTemp.seedNumber;
-        let temp = game.seed(holeTemp.id);
+        let temp = gameBot.seed(holeTemp.id);
         if(temp === "s2") {
-            setTimeout(randomBot, 1000);
+            setTimeout(botPlay, 1000);
         }
-        if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp)) {
-            let indexTemp = game.bottomRow.index(temp);
-            game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-2].removeSeed());
-            game.topRow.holes[holeNumber].addSeeds(game.topRow.holes[i+numSeeds].removeSeed());
+        let indexTemp = gameBot.bottomRow.index(temp);
+        if(gameBot.searchHole(temp).wasEmpty() && gameBot.topRow.elem(temp) && !game.bottomRow.holes[holeNumber-indexTemp-1].empty()) {
+            gameBot.topRow.holes[holeNumber].addSeeds(gameBot.bottomRow.holes[holeNumber-indexTemp-1].removeSeed());
+            gameBot.topRow.holes[holeNumber].addSeeds(gameBot.topRow.hole(temp).removeSeed());
         }
         if(terminate()) decideWinner();
-        game.turn = PLAYER;
+        gameBot.turn = PLAYER;
         return;
     }
 } 
 
 function terminate() {
     if(game.turn == PLAYER) {
-
         if(game.topRow.noSeeds()) {
             let newSeeds = 0;
             for(let i = 0; i < holeNumber; i++) {
@@ -393,4 +402,22 @@ function decideWinner() {
     }
 
     game.turn = null;
+}
+
+function bot(depth) {
+    let maxSeedsIndex = -1, maxSeeds = -1;
+
+    for(let i = 0; i < holeNumber; i++) {
+        let gameClone = JSON.parse(JSON.stringify(game                  ));
+        botPlay(i, gameClone);
+        let num = gameClone.topRow.holes[holeNumber].seedNumber;
+        console.log(num + " " + maxSeedsIndex + ":" + maxSeeds);
+
+        if(num > maxSeeds) {
+            maxSeedsIndex = i;
+            maxSeeds = num;
+        }
+    }
+
+    return maxSeedsIndex;
 }
