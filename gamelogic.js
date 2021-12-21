@@ -26,11 +26,37 @@ let seedNumber = seedSlider.value;
 let holeNumber = holeSlider.value;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
-let mode = LVL_1_BOT;
+let modeTemp = RAND_BOT;
+let mode = RAND_BOT;
+
+let nivelDificuldade = document.getElementById("nivelDificuldade");
+let modoJogo = document.getElementById("modoJogo"); 
+
 let game = null;
 
+nivelDificuldade.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Médio") modeTemp=LVL_1_BOT;
+    }
+    console.log(modeTemp);
+}
 
-// HA UM PROBLEMA COM ISTO...
+modoJogo.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Médio") modeTemp=LVL_1_BOT;
+    }
+    console.log(modeTemp);
+}
+
+
 holeSlider.oninput = function(){
     document.getElementById("demo1").innerHTML="Número de Buracos: " + holeSlider.value;
     holeNumberTemp = holeSlider.value;
@@ -58,9 +84,10 @@ playButton.onclick = function() {
     }
     holeNumber = holeNumberTemp;
     seedNumber = seedNumberTemp;
+    mode = modeTemp;
     game = new Game();
     console.log(game);
-
+    console.log(mode)
 
 }
 
