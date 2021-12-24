@@ -238,21 +238,6 @@ table, th, td {
   margin-top: 7%;
 }
 
-.login{
-  width: 59%;
-  height: 5%;
-  margin: auto;
-  margin-left: 20%;
-}
-
-.loginNome{
-  font-size: 26px;
-  margin: auto;
-  margin-top: 5%;
-  margin-bottom: 5%;
-  text-align: center;
-}
-
 .backlogin{
   background-color: antiquewhite;
   height: 70%;
@@ -274,4 +259,104 @@ table, th, td {
   width: 5%; 
   height: 15%;
   border-radius: 50%;
+}
+
+.form__input,
+.form__button{
+  font: 500 1rem 'Quicksand', sans-serif;
+}
+
+.form--hidden{
+  display: none;
+}
+
+.form > *:first-child{
+  margin-top: 0;
+}
+
+.form > *:last-child{
+  margin-bottom: 0;
+}
+
+.form__title{
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form__message{
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.form__message--success{
+  color: #4bb544;
+}
+
+.form__message--error{
+  color: #cc3333;
+}
+
+.form__input-group{
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form__input{
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #dddddd;
+  outline: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.form__input:focus{
+  border-color: #009579;
+}
+
+.form__input--error{
+  color: #cc3333;
+  border-color: #cc3333;
+}
+
+.form__input-error-message{
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #cc3333;
+}
+
+.form__button{
+  margin-left: 45%;
+  padding: 1rem 2rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background-color: #009579;
+}
+
+.form__button:hover{
+  background: #009579;
+}
+
+.form__button:active{
+  transform: scale(0.98);
+}
+
+.form__text{
+  text-align: center;
+}
+
+.form__link{
+  text-decoration: none;
+  cursor: pointer
+}
+
+.form__link:hover{
+  text-decoration: underline;
 }
