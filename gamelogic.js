@@ -1,3 +1,4 @@
+
 /**
  * Get a random number between min, max
  * @param {*} max Int: maximum number 
@@ -9,7 +10,7 @@
 
 const PVP = 0;
 const RAND_BOT = 1;
-const LVL_1_BOT = 2;
+const BEST_BOT = 2;
 
 const PLAYER = 0;
 const ADVERSARY = 1;
@@ -28,11 +29,10 @@ let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
 let modeTemp = RAND_BOT;
 let mode = RAND_BOT;
+let game = null;
 
 let nivelDificuldade = document.getElementById("nivelDificuldade");
 let modoJogo = document.getElementById("modoJogo"); 
-
-let game = null;
 
 nivelDificuldade.oninput = function(){
     const v = modoJogo.value;
@@ -40,7 +40,7 @@ nivelDificuldade.oninput = function(){
     else if ( v==="Robô"){
         const d = nivelDificuldade.value;
         if(d==="Fácil") modeTemp=RAND_BOT;
-        else if (d==="Médio") modeTemp=LVL_1_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
     }
     console.log(modeTemp);
 }
@@ -51,7 +51,7 @@ modoJogo.oninput = function(){
     else if ( v==="Robô"){
         const d = nivelDificuldade.value;
         if(d==="Fácil") modeTemp=RAND_BOT;
-        else if (d==="Médio") modeTemp=LVL_1_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
     }
     console.log(modeTemp);
 }
@@ -84,20 +84,29 @@ playButton.onclick = function() {
     }
     holeNumber = holeNumberTemp;
     seedNumber = seedNumberTemp;
-    mode = modeTemp;
     game = new Game();
     console.log(game);
-    console.log(mode)
+
 
 }
 
 class Hole {
-    constructor(seedNumber, id){
+    constructor(seedNumber, id, clone = false){
         this.seedNumber =  seedNumber - '0';
         this.id = id;
-        this.hole = document.getElementById(id);
+        this.cloneH = clone;
 
-        this.startSeed();
+        if(!clone) {
+            this.hole = document.getElementById(id);
+            this.update();
+            this.startSeed();
+        }
+        
+    }
+
+    update(){
+        if(this.cloneH) return;
+        this.hole.innerHTML = this.seedNumber;
     }
 
     startSeed() {
@@ -114,6 +123,10 @@ class Hole {
         }
     }
 
+    clone() {
+        return new Hole(this.seedNumber, this.id, true)
+    }
+
     empty() {
         return !this.seedNumber;
     }
@@ -123,53 +136,75 @@ class Hole {
     }
 
     addSeeds(seeds) {
+        let childs = [];
         this.seedNumber += seeds;
+        
+        
+        while(!this.cloneH && this.hole.firstChild){
+            childs.push(this.hole.removeChild(this.hole.firstChild));
+        }
 
-        for(let i = 0; i < seeds;i++) {
+        this.update();
+        for(let i = 0; i < this.seedNumber && !this.cloneH; i++) {
             let seed = document.createElement("div");
             seed.classList.add("seed");
             seed.style.top = (getRandomInt(20, 40)).toString() + "%";
             seed.style.left = (getRandomInt(20, 40)).toString() + "%";
+            
             let valueRan = "rotate(" + getRandomInt(0, 180).toString() + "deg)"
             seed.style.transform = valueRan;
 
             this.hole.appendChild(seed);
         }
+        
+        
     }
 
     removeSeed() {
         let seedNumberTemp = this.seedNumber;
         this.seedNumber = 0;
-
-        while(this.hole.firstChild) {
+        while(!this.cloneH && this.hole.firstChild) {
             this.hole.removeChild(this.hole.firstChild);
         }
-
+        this.update();
+        
         return seedNumberTemp;
     }
 
-    seed() {
-
-    }
 }
 
 class StorageHole extends Hole {
-    constructor(id) {
-        super(0, id);
+    constructor(id, clone = false) {
+        super(0, id, clone);
     }
 
+    clone() {
+        let storageClone = new StorageHole(this.id, true);
+        storageClone.seedNumber = this.seedNumber;
 
+        return storageClone;
+    }
 }
 
 
 
 class Row {
 
-    constructor(row) {
+    constructor(row, clone = false) {
         this.holes = [];
         this.row = row
-        this.createHoles();
+        if(!clone) this.createHoles();
 
+    }
+
+    clone() {
+        let rowClone = new Row(this.row, true);
+
+        for(let i = 0; i <= holeNumber; i++) {
+            rowClone.holes[i] = this.holes[i].clone();
+        }
+
+        return rowClone;
     }
 
     createHoles() {
@@ -205,6 +240,8 @@ class Row {
 
     }
 
+
+
     noSeeds() {
         for(let i = 0; i < holeNumber; i++) {
             if(!this.holes[i].empty()) return false;
@@ -239,77 +276,135 @@ class Row {
 }
 
 class Game {
-    constructor() {
-        this.bottomRow = new Row(PLAYER);
-        this.topRow = new Row(ADVERSARY);
-        this.turn = PLAYER;
-        this.setup();
+    constructor(turn = PLAYER, clone = false) {
+        this.bottomRow = new Row(PLAYER, clone);
+        this.topRow = new Row(ADVERSARY, clone);
+        this.turn = turn;
+        if(!clone) this.setup();
     }
 
+    clone() {
+        let gameClone = new Game(ADVERSARY, true);
 
-    seed(holeId) {
+        gameClone.bottomRow = this.bottomRow.clone();
+        gameClone.topRow = this.topRow.clone();
+
+        return gameClone;
+
+    }
+
+    bestMove(g = this){
+        let index = [-1], maxSeed = -1;
+
+        for(let i = holeNumber - '0' + 1 ; i <= 2*(holeNumber-'0'); i++) {
+            // Declaraçao das variaveis
+            let indexTemp = [], maxSeedTemp = 0;
+            let gameClone = g.clone();
+            if(maxSeed === -1) maxSeed = gameClone.seedStorage(gameClone.topRow);
+            let holeId = gameClone.seed('c' + i, gameClone);
+
+            // Caso o buraco esteja vazia, vai para o proximo
+            if(holeId === null) {
+                continue;
+            }
+
+            // Caso calha no storage, joga de novo
+            if(holeId === 's2') {
+                let temp = gameClone.bestMove(gameClone);
+                for(let j = 0; j < temp[0].length; j++) indexTemp.push(temp[0][j]);
+                maxSeedTemp = temp[1] - gameClone.seedStorage(gameClone.topRow);
+            }
+
+            gameClone.updateEmptyHole(gameClone, gameClone.topRow, gameClone.bottomRow, holeId);
+
+            // Ver quem tem mais sementes no storage
+            if((gameClone.seedStorage(gameClone.topRow) + maxSeedTemp) > maxSeed) {
+                index[0] = i;
+
+                for(let j = 0; j < indexTemp.length; j++) 
+                    index.push(indexTemp[j]);
+
+                maxSeed = gameClone.seedStorage(gameClone.topRow) + maxSeedTemp;
+            }
+
+        }
+
+        if(index[0] === -1){
+            for(let i = holeNumber - '0' + 1 ; i <= 2*(holeNumber-'0'); i++) {
+                if(!g.searchHole('c' + i, g).empty()) {
+                    return [[i], maxSeed];
+                }
+            }
+        }
+        return [index, maxSeed];
+    }
+
+    seedStorage(row) {
+        return row.holes[holeNumber].seedNumber;
+    }
+
+    seed(holeId, g = this) {
 
         if(holeId[0] === 's') return;
+        let nSeed = g.searchHole(holeId, g).removeSeed();
 
-        let nSeed = this.searchHole(holeId).removeSeed();
-
-        if(nSeed === 0) {
+        if(nSeed === 0 && this.turn == PLAYER) {
             console.log("Empty hole!");
             return null;
         }
         for(let i = 0; i < nSeed; i++) {
-            holeId = this.nextHole(holeId);
-
+            holeId = g.nextHole(holeId, g);
+            
             // Nao semear no storage contrario
-            if(this.turn === PLAYER && holeId === "s2") {
-                holeId = this.nextHole(holeId);
+            if(g.turn === PLAYER && holeId === "s2") {
+                holeId = g.nextHole(holeId, g);
             }
-            if(this.turn === ADVERSARY && holeId === "s1") {
-                holeId = this.nextHole(holeId);
+            if(g.turn === ADVERSARY && holeId === "s1") {
+                holeId = g.nextHole(holeId, g);
             }
-
-            this.searchHole(holeId).addSeeds(1);
+            g.searchHole(holeId, g).addSeeds(1);
 
         }
 
         return holeId;
     }
 
-    searchHole(holeId){
+    searchHole(holeId, g = this){
+
         if(holeId === "s1") 
-            return this.bottomRow.holes[holeNumber];
+            return g.bottomRow.holes[holeNumber];
         if(holeId === "s2")
-            return this.topRow.holes[holeNumber];
+            return g.topRow.holes[holeNumber];
 
         for(let i = 0; i < holeNumber; i++) {
-            if(this.bottomRow.holes[i].id === holeId) {
-                return this.bottomRow.holes[i];
+            if(g.bottomRow.holes[i].id === holeId) {
+                return g.bottomRow.holes[i];
             }
         }
 
         for(let i = 0; i < holeNumber; i++) {
-            if(this.topRow.holes[i].id === holeId) {
-                return this.topRow.holes[i];
+            if(g.topRow.holes[i].id === holeId) {
+                return g.topRow.holes[i];
             }
         }
         return null;
     }
 
-    nextHole(holeId) {
+    nextHole(holeId, g = this){
         if(holeId === "s1") 
-            return this.topRow.holes[0].id;
+            return g.topRow.holes[0].id;
         if(holeId === "s2")
-            return this.bottomRow.holes[0].id;
+            return g.bottomRow.holes[0].id;
 
         for(let i = 0; i < holeNumber; i++) {
-            if(this.bottomRow.holes[i].id === holeId) {
-                return this.bottomRow.holes[i+1].id;
+            if(g.bottomRow.holes[i].id === holeId) {
+                return g.bottomRow.holes[i+1].id;
             }
         }
 
         for(let i = 0; i < holeNumber; i++) {
-            if(this.topRow.holes[i].id === holeId) {
-                return this.topRow.holes[i+1].id;
+            if(g.topRow.holes[i].id === holeId) {
+                return g.topRow.holes[i+1].id;
             }
         }
         return null;
@@ -325,11 +420,8 @@ class Game {
                         let temp = game.seed(holeTemp.id);
                         if(terminate()) decideWinner();
                         if(temp != "s2") {
-                            let indexTemp = game.bottomRow.index(temp);
-                            if(game.searchHole(temp).wasEmpty() && game.topRow.elem(temp) && !game.bottomRow.holes[holeNumber-indexTemp-1].empty()) {
-                                game.topRow.holes[holeNumber].addSeeds(game.bottomRow.holes[holeNumber-indexTemp-1].removeSeed());
-                                game.topRow.holes[holeNumber].addSeeds(game.topRow.hole(temp).removeSeed());
-                            }
+
+                            game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
                             game.turn = PLAYER;
                         }
                     }
@@ -346,17 +438,16 @@ class Game {
                     if(terminate()) decideWinner();
                     if(temp != "s1") {
 
-                        let indexTemp = game.bottomRow.index(temp);
-                        if(game.searchHole(temp).wasEmpty() && game.bottomRow.elem(temp) && !game.topRow.holes[holeNumber-indexTemp-1].empty()) {
-                            game.bottomRow.holes[holeNumber].addSeeds(game.topRow.holes[holeNumber-indexTemp-1].removeSeed());
-                            game.bottomRow.holes[holeNumber].addSeeds(game.bottomRow.hole(temp).removeSeed());
-                        }
+                        game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         game.turn = ADVERSARY;
+
                         switch(mode) {
                             case RAND_BOT:
-                                setTimeout(botPlay, 1000);
-                            case LVL_1_BOT:
-                                console.log(bot(null));
+                                setTimeout(randPlay, 1000);
+                                break;
+                            case BEST_BOT:
+                                setTimeout(bestPlay, 1000);
+                                break;
                         }
                     }
                 }
@@ -364,29 +455,52 @@ class Game {
         }
     }
 
+    updateEmptyHole(board, myRow, otherRow, hole) {
+        let index = myRow.index(hole);
+        // JIC: && !board.otherRow.holes[holeNumber-indexTemp-1].empty()
+        if(board.searchHole(hole).wasEmpty() && myRow.elem(hole)) {
+            myRow.holes[holeNumber].addSeeds(otherRow.holes[holeNumber-index-1].removeSeed());
+            myRow.holes[holeNumber].addSeeds(myRow.holes[index].removeSeed());
+            return true;
+        }
+        
+        return false;
+    }
     
 }
 
+function bestPlay(){
+    // temp = ["Array com jogadas", "Sementes no Storage(Nao importante para aqui)"];
+
+    let moves = game.bestMove()[0];
+    for(let i = 0; i < moves.length; i++) {
+        let temp = game.seed('c' + moves[i]);
+        
+        game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
+        if(terminate()) decideWinner();
+    }
+    if(terminate()) decideWinner();
+    game.turn = PLAYER;
+
+    return;
+}
 
 
-function botPlay(index = null, gameBot = game) {
+function randPlay() {
     while(true) {
         let i = getRandomInt(0, holeNumber-1);
-        if(index != null) i = index;
-        
-        let holeTemp = gameBot.topRow.holes[i];
+
+        let holeTemp = game.topRow.holes[i];
         if(holeTemp.empty()) continue;
-        let temp = gameBot.seed(holeTemp.id);
+        let temp = game.seed(holeTemp.id);
         if(temp === "s2") {
-            setTimeout(botPlay, 1000);
+            setTimeout(randPlay, 1000);
         }
-        let indexTemp = gameBot.bottomRow.index(temp);
-        if(gameBot.searchHole(temp).wasEmpty() && gameBot.topRow.elem(temp) && !game.bottomRow.holes[holeNumber-indexTemp-1].empty()) {
-            gameBot.topRow.holes[holeNumber].addSeeds(gameBot.bottomRow.holes[holeNumber-indexTemp-1].removeSeed());
-            gameBot.topRow.holes[holeNumber].addSeeds(gameBot.topRow.hole(temp).removeSeed());
-        }
+
+        game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
+
         if(terminate()) decideWinner();
-        gameBot.turn = PLAYER;
+        game.turn = PLAYER;
         return;
     }
 } 
@@ -429,22 +543,4 @@ function decideWinner() {
     }
 
     game.turn = null;
-}
-
-function bot(depth) {
-    let maxSeedsIndex = -1, maxSeeds = -1;
-
-    for(let i = 0; i < holeNumber; i++) {
-        let gameClone = JSON.parse(JSON.stringify(game                  ));
-        botPlay(i, gameClone);
-        let num = gameClone.topRow.holes[holeNumber].seedNumber;
-        console.log(num + " " + maxSeedsIndex + ":" + maxSeeds);
-
-        if(num > maxSeeds) {
-            maxSeedsIndex = i;
-            maxSeeds = num;
-        }
-    }
-
-    return maxSeedsIndex;
 }
