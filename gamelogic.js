@@ -255,6 +255,7 @@ class Game {
         this.topRow = new Row(ADVERSARY, clone);
         this.turn = turn;
         if(!clone) this.setup();
+
     }
 
     clone() {
@@ -288,11 +289,9 @@ class Game {
                 for(let j = 0; j < temp[0].length; j++) indexTemp.push(temp[0][j]);
                 maxSeedTemp = temp[1] - gameClone.seedStorage(gameClone.topRow);
             }
-
-            gameClone.updateEmptyHole(gameClone, gameClone.topRow, gameClone.bottomRow, holeId);
-
             // Ver quem tem mais sementes no storage
             if((gameClone.seedStorage(gameClone.topRow) + maxSeedTemp) > maxSeed) {
+                index = [];
                 index[0] = i;
 
                 for(let j = 0; j < indexTemp.length; j++) 
@@ -309,6 +308,7 @@ class Game {
                     return [[i], maxSeed];
                 }
             }
+
         }
         return [index, maxSeed];
     }
@@ -318,7 +318,6 @@ class Game {
     }
 
     seed(holeId, g = this) {
-
         if(holeId[0] === 's') return;
         let nSeed = g.searchHole(holeId, g).removeSeed();
 
@@ -326,6 +325,7 @@ class Game {
             console.log("Empty hole!");
             return null;
         }
+
         for(let i = 0; i < nSeed; i++) {
             holeId = g.nextHole(holeId, g);
             
@@ -336,9 +336,10 @@ class Game {
             if(g.turn === ADVERSARY && holeId === "s1") {
                 holeId = g.nextHole(holeId, g);
             }
+            
             g.searchHole(holeId, g).addSeeds(1);
-
         }
+
 
         return holeId;
     }
@@ -399,6 +400,9 @@ class Game {
                             game.turn = PLAYER;
                         }
                     }
+                    if(game.topRow.noSeeds() && game.turn === ADVERSARY && terminate(true)) {
+                        decideWinner();
+                    }
                 }
             }
         }
@@ -406,8 +410,7 @@ class Game {
         for(let i = 0; i < holeNumber; i++) {
             let holeTemp = this.bottomRow.holes[i];
             holeTemp.hole.onclick = function() {
-                if(!game.turn && !holeTemp.empty()) {4
-
+                if(!game.turn && !holeTemp.empty()) {
                     let temp = game.seed(holeTemp.id);
                     if(terminate()) decideWinner();
                     if(temp != "s1") {
@@ -423,6 +426,9 @@ class Game {
                                 setTimeout(bestPlay, 1000);
                                 break;
                         }
+                    }
+                    if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
+                        decideWinner();
                     }
                 }
             }
@@ -445,16 +451,19 @@ class Game {
 
 function bestPlay(){
     // temp = ["Array com jogadas", "Sementes no Storage(Nao importante para aqui)"];
-
     let moves = game.bestMove()[0];
+    console.log(moves);
     for(let i = 0; i < moves.length; i++) {
+        if(moves[i] === -1 && terminate(true))
+            decideWinner();
+
         let temp = game.seed('c' + moves[i]);
         
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
-        if(terminate()) decideWinner();
     }
     if(terminate()) decideWinner();
     game.turn = PLAYER;
+
 
     return;
 }
@@ -475,11 +484,25 @@ function randPlay() {
 
         if(terminate()) decideWinner();
         game.turn = PLAYER;
+
+        if(game.topRow.noSeeds() && game.turn === ADVERSARY && terminate(true)) {
+            decideWinner();
+        }
         return;
     }
 } 
 
-function terminate() {
+function terminate(force = false) {
+    if(force) {
+        let newSeedsTop = 0, newSeedsBottom = 0;
+        for(let i = 0; i < holeNumber; i++) {
+            newSeedsTop += game.topRow.holes[i].removeSeed();
+            newSeedsBottom += game.bottomRow.holes[i].removeSeed();
+        }
+        game.bottomRow.holes[holeNumber].addSeeds(newSeedsBottom);
+        game.topRow.holes[holeNumber].addSeeds(newSeedsTop);
+        return true;
+    }
     if(game.turn == PLAYER) {
         if(game.topRow.noSeeds()) {
             let newSeeds = 0;
