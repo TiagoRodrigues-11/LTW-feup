@@ -27,8 +27,34 @@ let seedNumber = seedSlider.value;
 let holeNumber = holeSlider.value;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
-let mode = BEST_BOT;
+let modeTemp = RAND_BOT;
+let mode = RAND_BOT;
 let game = null;
+
+let nivelDificuldade = document.getElementById("nivelDificuldade");
+let modoJogo = document.getElementById("modoJogo"); 
+
+nivelDificuldade.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
+    }
+    console.log(modeTemp);
+}
+
+modoJogo.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
+    }
+    console.log(modeTemp);
+}
 
 
 holeSlider.oninput = function(){

@@ -154,6 +154,8 @@
 
         </div>
 
+        <button id="playBtn" class="button">Novo Jogo</button>
+
         <button id="scoreBtn" class="button">Pontuação</button>
 
         <div id="scoreModal" class="modal">
@@ -173,8 +175,6 @@
           </div>
 
         </div>
-        
-        <button id="playBtn" class="button">Jogar</button>
 
 
         <button id="settingsBtn" class="button">Configuração</button>
@@ -185,13 +185,12 @@
             <span class="close">&times;</span>
             <div> 
               <p class="configurar">Nível de dificuldade </p>
-              <select class="seletor" name="Nivel de dificuldade" size=1>
+              <select class="seletor" name="Nivel de dificuldade" size=1 id="nivelDificuldade">
                 <option>Fácil</option>
-                <option>Médio</option>
                 <option>Difícil</option>
               </select>
               <p class="configurar"> Modo jogo </p> 
-              <select class="seletor" name="Modo do Jogo" size=1>
+              <select class="seletor" name="Modo do Jogo" size=1 id="modoJogo">
                 <option>Robô</option>
                 <option>Adversário</option>
               </select>
