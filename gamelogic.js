@@ -136,11 +136,11 @@ class Hole {
     removeSeed() {
         let seedNumberTemp = this.seedNumber;
         this.seedNumber = 0;
-
         while(!this.cloneH && this.hole.firstChild) {
             this.hole.removeChild(this.hole.firstChild);
         }
-
+        this.update();
+        
         return seedNumberTemp;
     }
 
