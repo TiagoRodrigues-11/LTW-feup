@@ -341,7 +341,7 @@ table, th, td {
 }
 
 .form__button{
-  margin-left: 45%;
+  margin-left: 35%;
   padding: 1rem 2rem;
   font-weight: bold;
   font-size: 1.1rem;
@@ -351,6 +351,7 @@ table, th, td {
   outline: none;
   cursor: pointer;
   background-color: #009579;
+  text-align: center;
 }
 
 .form__button:hover{
@@ -367,7 +368,8 @@ table, th, td {
 
 .form__link{
   text-decoration: none;
-  cursor: pointer
+  cursor: pointer;
+  text-align: center;
 }
 
 .form__link:hover{
