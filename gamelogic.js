@@ -67,26 +67,33 @@ seedSlider.oninput = function(){
     seedNumberTemp = seedSlider.value;
 }
 
+
 playButton.onclick = function() {
+    /*if(game!== null){
+        console.log("novo");
+    }*/
 
-
-    while(contaParentUp.firstChild) {
-        contaParentUp.removeChild(contaParentUp.firstChild);
+    if(modeTemp!==PVP){
+        while(contaParentUp.firstChild) {
+            contaParentUp.removeChild(contaParentUp.firstChild);
+        }
+        while(contaParentDown.firstChild) {
+            contaParentDown.removeChild(contaParentDown.firstChild);
+        }
+        while(stParentLeft.firstChild) {
+            stParentLeft.removeChild(stParentLeft.firstChild);
+        }
+        while(stParentRight.firstChild) {
+            stParentRight.removeChild(stParentRight.firstChild);
+        }
+        holeNumber = holeNumberTemp;
+        seedNumber = seedNumberTemp;
+        mode = modeTemp;
+        game = new Game();
+        console.log(game);
+        console.log(mode);
+        playButton.innerHTML = "Desistir";
     }
-    while(contaParentDown.firstChild) {
-        contaParentDown.removeChild(contaParentDown.firstChild);
-    }
-    while(stParentLeft.firstChild) {
-        stParentLeft.removeChild(stParentLeft.firstChild);
-    }
-    while(stParentRight.firstChild) {
-        stParentRight.removeChild(stParentRight.firstChild);
-    }
-    holeNumber = holeNumberTemp;
-    seedNumber = seedNumberTemp;
-    game = new Game();
-    console.log(game);
-
 
 }
 
