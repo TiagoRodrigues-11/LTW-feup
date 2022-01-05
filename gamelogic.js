@@ -72,8 +72,11 @@ playButton.onclick = function() {
     /*if(game!== null){
         console.log("novo");
     }*/
-
-    if(modeTemp!==PVP){
+    if(playButton.innerHTML === "Desistir") {
+        game.gameOver();
+        playButton.innerHTML = "Novo Jogo";
+    }
+    else if(modeTemp!==PVP){
         while(contaParentUp.firstChild) {
             contaParentUp.removeChild(contaParentUp.firstChild);
         }
@@ -91,10 +94,9 @@ playButton.onclick = function() {
         mode = modeTemp;
         game = new Game();
         console.log(game);
-        console.log(mode);
         playButton.innerHTML = "Desistir";
     }
-
+    
 }
 
 class Hole {
@@ -109,6 +111,15 @@ class Hole {
             this.startSeed();
         }
         
+    }
+
+    gameOver() {
+
+        this.hole.parentNode.removeChild(this.hole);
+
+        delete this.seedNumber;
+        delete this.id;
+        delete this.hole;
     }
 
     update(){
@@ -278,6 +289,14 @@ class Row {
                 return true;
         }
         return false;
+    }
+
+    gameOver() {
+        for(let i = 0; i <= holeNumber; i++) {
+            this.holes[i].gameOver();
+        }
+        this.holes = null;
+        this.row = null;
     }
 
 }
@@ -479,6 +498,11 @@ class Game {
         
         return false;
     }
+
+    gameOver() {
+        game.bottomRow.gameOver();
+        game.topRow.gameOver();
+    }
     
 }
 
@@ -560,7 +584,17 @@ function terminate(force = false) {
     return false;
 }
 
-function decideWinner() {
+function decideWinner(winner = null) {
+    if(winner !== null) {
+        if(winner === PLAYER)
+            console.log("PLayer won!");
+        else
+            console.log("Adversary won!");
+
+        game.turn = null;
+        return;
+    }
+
     let playerSeeds = game.bottomRow.holes[holeNumber].seedNumber;
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
