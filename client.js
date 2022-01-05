@@ -2,7 +2,8 @@ let nick;
 let pass;
 const group = 64;
 let gameId;
-let evento
+let eventSource;
+let login=false;
 
 let loginForm = document.getElementById("login");
 let createAccountForm = document.getElementById("createAccount");
@@ -59,6 +60,7 @@ function register(email, password){
         if(response.ok) {
             nick=email;
             pass=password;
+            login=true;
             console.log(nick + " " + pass);
         } else{
             console.log('erro: ' + response.status + ": " +  response.statusText);  
@@ -91,11 +93,11 @@ function ranking(){
 
 
 playButton.onclick = function() {
-    /*if(game!== null){
+    if(game!== null){
         console.log("novo");
-    }*/
+    }
 
-    if(modeTemp===PVP){
+    if(modeTemp===PVP && login){
         while(contaParentUp.firstChild) {
             contaParentUp.removeChild(contaParentUp.firstChild);
         }
@@ -145,6 +147,7 @@ function join(){
      .then(function(data){
          gameId=data.game;
          console.log(gameId);
+         update();
      })
     .catch(console.log);
 }
@@ -199,5 +202,13 @@ function notify(){
 }
 
 function update(){
-    evento = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + nick + "&game=" + gameId);
+    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(nick) + "&game=" + encodeURIComponent(gameId));
+    eventSource.onmessage = function(event){
+        const data = JSON.parse(event.data);
+        console.log(data);
+    }
+}
+
+function soma(){
+    return 1+1;
 }

@@ -1,4 +1,3 @@
-
 /**
  * Get a random number between min, max
  * @param {*} max Int: maximum number 
