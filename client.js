@@ -91,7 +91,7 @@ function ranking(){
     })
 }
 
-
+/*
 playButton.onclick = function() {
     if(game!== null){
         console.log("novo");
@@ -118,10 +118,10 @@ playButton.onclick = function() {
         game = new Game();
         console.log(game);
         console.log(mode);
-        playButton.innerHTML = "Desistir";*/
+        playButton.innerHTML = "Desistir";+
     }
 
-}
+}*/
 
 
 function join(){
