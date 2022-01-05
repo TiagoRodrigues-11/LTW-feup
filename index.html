@@ -12,6 +12,7 @@
         <script src="modals.js" defer></script>
         <script src="gamelogic.js" defer></script>
         <script src="server.js" defer></script>
+        <script src="client.js" defer></script>
       </head>
 
 
@@ -55,11 +56,7 @@
                 <div class="form__input-error-message"></div>
               </div>
 
-              <button class="form__button" type="submit">Login</button>
-
-              <p class="form__text">
-                <a href="#" class="form__link">Forgot your password</a>
-              </p>
+              <input class="form__button" type="button" value="Login">
 
               <p class="form__text">
                 <a id="linkCreateAccount" class="form__link">Don't have an account? Create acount </a>
@@ -69,12 +66,12 @@
             <form class="form form--hidden" id="createAccount">
               <h1 class="form__title">Create Account</h1>
               <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Email">
+                <input type="text" class="form__input" autofocus placeholder="Email" id="createEmail">
                 <div class="form__input-error-message"></div>
               </div>
 
               <div class="form__input-group">
-                <input type="password" class="form__input" autofocus placeholder="Password">
+                <input type="password" class="form__input" autofocus placeholder="Password" id="createPass">
                 <div class="form__input-error-message"> </div>
               </div>
 
@@ -83,7 +80,7 @@
                 <div class="form__input-error-message"> </div>
               </div>
 
-              <button class="form__button" type="submit">Register</button>
+              <button class="form__button" type="button" id="Register">Register</button>
 
               <p class="form__text">
                 <a id="linkLogin" class="form__link">Already have account? Sign in </a>
@@ -154,7 +151,9 @@
 
         </div>
 
-        <button id="scoreBtn" class="button">Pontuação</button>
+        <button id="playBtn" class="button">Novo Jogo</button>
+
+        <button id="scoreBtn" class="button">Ranking</button>
 
         <div id="scoreModal" class="modal">
 
@@ -173,8 +172,6 @@
           </div>
 
         </div>
-        
-        <button id="playBtn" class="button">Jogar</button>
 
 
         <button id="settingsBtn" class="button">Configuração</button>
@@ -185,13 +182,12 @@
             <span class="close">&times;</span>
             <div> 
               <p class="configurar">Nível de dificuldade </p>
-              <select class="seletor" name="Nivel de dificuldade" size=1>
+              <select class="seletor" name="Nivel de dificuldade" size=1 id="nivelDificuldade">
                 <option>Fácil</option>
-                <option>Médio</option>
                 <option>Difícil</option>
               </select>
               <p class="configurar"> Modo jogo </p> 
-              <select class="seletor" name="Modo do Jogo" size=1>
+              <select class="seletor" name="Modo do Jogo" size=1 id="modoJogo">
                 <option>Robô</option>
                 <option>Adversário</option>
               </select>

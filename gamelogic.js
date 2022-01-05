@@ -27,8 +27,34 @@ let seedNumber = seedSlider.value;
 let holeNumber = holeSlider.value;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
-let mode = BEST_BOT;
+let modeTemp = RAND_BOT;
+let mode = RAND_BOT;
 let game = null;
+
+let nivelDificuldade = document.getElementById("nivelDificuldade");
+let modoJogo = document.getElementById("modoJogo"); 
+
+nivelDificuldade.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
+    }
+    console.log(modeTemp);
+}
+
+modoJogo.oninput = function(){
+    const v = modoJogo.value;
+    if(v==="Adversário") modeTemp=PVP;
+    else if ( v==="Robô"){
+        const d = nivelDificuldade.value;
+        if(d==="Fácil") modeTemp=RAND_BOT;
+        else if (d==="Difícil") modeTemp=BEST_BOT;
+    }
+    console.log(modeTemp);
+}
 
 
 holeSlider.oninput = function(){
@@ -41,26 +67,33 @@ seedSlider.oninput = function(){
     seedNumberTemp = seedSlider.value;
 }
 
+
 playButton.onclick = function() {
+    /*if(game!== null){
+        console.log("novo");
+    }*/
 
-
-    while(contaParentUp.firstChild) {
-        contaParentUp.removeChild(contaParentUp.firstChild);
+    if(modeTemp!==PVP){
+        while(contaParentUp.firstChild) {
+            contaParentUp.removeChild(contaParentUp.firstChild);
+        }
+        while(contaParentDown.firstChild) {
+            contaParentDown.removeChild(contaParentDown.firstChild);
+        }
+        while(stParentLeft.firstChild) {
+            stParentLeft.removeChild(stParentLeft.firstChild);
+        }
+        while(stParentRight.firstChild) {
+            stParentRight.removeChild(stParentRight.firstChild);
+        }
+        holeNumber = holeNumberTemp;
+        seedNumber = seedNumberTemp;
+        mode = modeTemp;
+        game = new Game();
+        console.log(game);
+        console.log(mode);
+        playButton.innerHTML = "Desistir";
     }
-    while(contaParentDown.firstChild) {
-        contaParentDown.removeChild(contaParentDown.firstChild);
-    }
-    while(stParentLeft.firstChild) {
-        stParentLeft.removeChild(stParentLeft.firstChild);
-    }
-    while(stParentRight.firstChild) {
-        stParentRight.removeChild(stParentRight.firstChild);
-    }
-    holeNumber = holeNumberTemp;
-    seedNumber = seedNumberTemp;
-    game = new Game();
-    console.log(game);
-
 
 }
 
