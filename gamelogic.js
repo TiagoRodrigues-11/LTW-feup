@@ -3,6 +3,7 @@
  * @param {*} max Int: maximum number 
  * @param {*} min Int: minimum number 
  */
+
  function getRandomInt(min, max) {
     return (min + Math.floor(Math.random()*(max+1)));
 }
@@ -22,16 +23,17 @@ let stParentRight   = document.getElementById("colPRight");
 let playButton      = document.getElementById("playBtn");
 let seedSlider      = document.getElementById("seedSlider");
 let holeSlider      = document.getElementById("holeSlider");
-let seedNumber = seedSlider.value;
-let holeNumber = holeSlider.value;
+let seedNumber;
+let holeNumber;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
 let modeTemp = RAND_BOT;
-let mode = RAND_BOT;
+let mode;
 let game = null;
 
 let nivelDificuldade = document.getElementById("nivelDificuldade");
 let modoJogo = document.getElementById("modoJogo"); 
+
 
 nivelDificuldade.oninput = function(){
     const v = modoJogo.value;
@@ -68,10 +70,7 @@ seedSlider.oninput = function(){
 
 
 playButton.onclick = function() {
-    /*if(game!== null){
-        console.log("novo");
-    }*/
-    if(playButton.innerHTML === "Desistir") {
+    if(mode!==PVP && playButton.innerHTML === "Desistir") {
         game.gameOver();
         playButton.innerHTML = "Novo Jogo";
     }
@@ -96,6 +95,32 @@ playButton.onclick = function() {
         playButton.innerHTML = "Desistir";
     }
     
+    if(mode===PVP && playButton.innerHTML === "Desistir") {
+        leave();
+        playButton.innerHTML = "Novo Jogo";
+    }
+    else if(modeTemp===PVP){
+        while(contaParentUp.firstChild) {
+            contaParentUp.removeChild(contaParentUp.firstChild);
+        }
+        while(contaParentDown.firstChild) {
+            contaParentDown.removeChild(contaParentDown.firstChild);
+        }
+        while(stParentLeft.firstChild) {
+            stParentLeft.removeChild(stParentLeft.firstChild);
+        }
+        while(stParentRight.firstChild) {
+            stParentRight.removeChild(stParentRight.firstChild);
+        }
+        holeNumber = holeNumberTemp;
+        seedNumber = seedNumberTemp;
+        join(holeNumber, seedNumber);
+        mode = modeTemp;
+        game = new Game();
+        console.log(game);
+        playButton.innerHTML = "Desistir";
+    }
+
 }
 
 class Hole {
@@ -439,47 +464,37 @@ class Game {
     setup() {
         if(mode === PVP) {
             for(let i = 0; i < holeNumber; i++) {
-                let holeTemp = this.topRow.holes[i];
-                
+                let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
-                    if(game.turn && !holeTemp.empty()) {
-                        let temp = game.seed(holeTemp.id);
-                        if(terminate()) decideWinner();
-                        if(temp != "s2") {
-
-                            game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
-                            game.turn = PLAYER;
-                        }
-                    }
-                    if(game.topRow.noSeeds() && game.turn === ADVERSARY && terminate(true)) {
-                        decideWinner();
-                    }
+                    notify(parseInt(holeTemp.id[1])-1);
+                    //update();
                 }
             }
         }
+        else{
+            for(let i = 0; i < holeNumber; i++) {
+                let holeTemp = this.bottomRow.holes[i];
+                holeTemp.hole.onclick = function() {
+                    if(!game.turn && !holeTemp.empty()) {
+                        let temp = game.seed(holeTemp.id);
+                        if(terminate()) decideWinner();
+                        if(temp != "s1") {
 
-        for(let i = 0; i < holeNumber; i++) {
-            let holeTemp = this.bottomRow.holes[i];
-            holeTemp.hole.onclick = function() {
-                if(!game.turn && !holeTemp.empty()) {
-                    let temp = game.seed(holeTemp.id);
-                    if(terminate()) decideWinner();
-                    if(temp != "s1") {
+                            game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
+                            game.turn = ADVERSARY;
 
-                        game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
-                        game.turn = ADVERSARY;
-
-                        switch(mode) {
-                            case RAND_BOT:
-                                setTimeout(randPlay, 1000);
-                                break;
-                            case BEST_BOT:
-                                setTimeout(bestPlay, 1000);
-                                break;
+                            switch(mode) {
+                                case RAND_BOT:
+                                    setTimeout(randPlay, 1000);
+                                    break;
+                                case BEST_BOT:
+                                    setTimeout(bestPlay, 1000);
+                                    break;
+                            }
                         }
-                    }
-                    if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
-                        decideWinner();
+                        if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
+                            decideWinner();
+                        }
                     }
                 }
             }
