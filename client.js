@@ -6,8 +6,6 @@ let eventSource;
 
 let login=false;
 
-/*Variáveis globais para o gameologics */
-
 let loginForm = document.getElementById("login");
 let createAccountForm = document.getElementById("createAccount");
 let Register = document.getElementById("Register");
