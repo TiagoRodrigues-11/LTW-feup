@@ -29,7 +29,8 @@ html, body, div {
   text-align: center;
   line-height: 350%;
   border-radius: 25%;
-  background: rgb(68, 68, 68);
+  border-color:rgb(34, 17, 4);
+  background:radial-gradient(rgb(161, 126, 96), #5e3f17);
   color: white;
   font-size: x-large;
 }
