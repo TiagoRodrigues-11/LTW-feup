@@ -5,12 +5,17 @@ html, body, div {
   height: 100%;
 }
 
+.bodyStyle {
+  background: url("wood.png");
+  max-width: 100%;
+  max-height: 100%;
+}
+
 
 .fixedDown {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background: rgb(158, 158, 158);
   width: 100%;
   height: 15%;
 }
@@ -47,16 +52,17 @@ html, body, div {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgb(46, 46, 46);
   width: 100%;
   height: 85%;
 }
 
 
 .board {
+  
   display: flex;
   align-items: center;
-  background: burlywood;
+  max-width: 95%;
+  max-height: 95%;
   width: 95%;
   height: 90%;
 }
@@ -68,11 +74,14 @@ html, body, div {
   
   top: 10%;
   border-radius: 25%;
-  background: rgb(201, 131, 90);
+  border-style:solid;
+  border-color:rgb(34, 17, 4);
+  background:radial-gradient(#5e3f17, rgb(83, 42, 8));
+  opacity: 0.85;
   width: 95%;
   height: 80%;
 
-  color:rgb(68, 68, 68, 0.2);
+  color:rgba(233, 232, 232, 0.4);
   font-size: 750%;
   text-align: center;
   line-height: 500%;
@@ -92,13 +101,11 @@ html, body, div {
 .containers {
   width: 70%;
   height: 100%;
-  background:rgb(177, 139, 139);
 }
 
 .columnLeft, .columnRight {
   width: 15%;
   height: 100%;
-  background: gold;
 }
 
 .rowUp, .rowDown {
@@ -109,15 +116,6 @@ html, body, div {
   height: 50%;
 }
 
-
-.rowUp {
-  background: saddlebrown;
-}
-
-.rowDown {
-  background: slateblue;
-}
-
 .hole {
 
   position: relative;
@@ -125,10 +123,13 @@ html, body, div {
   width: 10%;
   height: 40%;
   border-radius: 25px;
-  background:chartreuse;
+  border-style:solid;
+  border-color:rgb(34, 17, 4);
+  background:radial-gradient(#5e3f17, rgb(83, 42, 8));
+  opacity: 0.75;
   margin: auto auto ;
 
-  color:rgb(68, 68, 68, 0.4);
+  color:rgba(233, 232, 232, 0.4);
   font-size: 500%;
   text-align: center;
   line-height: 175%;
@@ -262,10 +263,10 @@ table, th, td {
 
   position: absolute;
 
-  background-color: brown;
+  background-image: radial-gradient(rgb(117, 52, 52),rgb(165, 42, 42,1));
   border-style: solid;
   border-width: thin;
-  border-color: black;
+  border-color: rgb(53, 15, 15);
   width: 5%; 
   height: 15%;
   border-radius: 50%;
@@ -375,4 +376,12 @@ table, th, td {
 .form__link:hover{
   text-decoration: underline;
 
+}
+
+.logo {
+  position:absolute;
+  opacity: 0.2;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
