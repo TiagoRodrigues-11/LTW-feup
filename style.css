@@ -30,6 +30,7 @@ html, body, div {
   line-height: 350%;
   border-radius: 25%;
   border-color:rgb(34, 17, 4);
+  opacity: 0.75;
   background:radial-gradient(rgb(161, 126, 96), #5e3f17);
   color: white;
   font-size: x-large;
