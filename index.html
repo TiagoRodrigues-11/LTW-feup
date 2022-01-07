@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 
 
-
-
-
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
@@ -11,14 +8,13 @@
         <link rel="stylesheet" href="style.css" type="text/css">
         <script src="modals.js" defer></script>
         <script src="gamelogic.js" defer></script>
-        <script src="server.js" defer></script>
-        <script src="client.js" defer></script>
       </head>
 
 
 
     <body class="bodyStyle">
       <img src="logo.png" alt="Logo" class="logo">
+
 
       <div class="fixedUp">
         <div class="board">
@@ -47,16 +43,16 @@
               <h1 class="form__title">Login</h1>
               <div class="form__message form__message--error"></div>
               <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Email">
+                <input id="loginEmail" type="text" class="form__input" autofocus placeholder="Email">
                 <div class="form__input-error-message"> </div>
               </div>
 
               <div class="form__input-group">
-                <input type="password" class="form__input" autofocus placeholder="Password">
+                <input id="loginPassword" type="password" class="form__input" autofocus placeholder="Password">
                 <div class="form__input-error-message"></div>
               </div>
 
-              <input class="form__button" type="button" value="Login">
+              <input id="Login" class="form__button" type="button" value="Login">
 
               <p class="form__text">
                 <a id="linkCreateAccount" class="form__link">Don't have an account? Create acount </a>
@@ -105,27 +101,27 @@
                   </li>
                 </ul>
               </li>
-        
+
               <li><h3>Peças:</h3>
                 <ul>
                   <li>As peças denominam-se sementes</li>
                 </ul>
               </li>
-        
+
               <li><h3>Inicio:</h3>
                 <ul>
                   <li>Os armazens estão vazios</li>
                   <li>As restantes cavidades têm o mesmo número de sementes</li>
                 </ul>
               </li>
-        
+
               <li><h3>Forma de jogar:</h3>
                 <ul>
                   <li>Jogadores semeiam de forma alternada a partir de uma das suas cavidades</li>
                   <li>Termina quando um dos jogadores fica sem sementes</li>
                 </ul>
               </li>
-        
+
               <li><h3>Semear:</h3>
                 <ul>
                   <li>Escolher uma cavidade do seu lado, recolher todas as sementes e distribuir pelas cavidades seguintes</li>
@@ -137,7 +133,7 @@
                   <li>Na cavidade oposta (do adversario) e a ultima semente</li>
                 </ul>
               </li>
-        
+
               <li><h3>Terminar:</h3>
                 <ul>
                   <li>Jogo termina quando um dos jogadores nao pode jogar porque nao tem sementes nas suas cavidades</li>
@@ -180,18 +176,18 @@
 
           <div class="configuracaowindow">
             <span class="close">&times;</span>
-            <div> 
+            <div>
               <p class="configurar">Nível de dificuldade </p>
               <select class="seletor" name="Nivel de dificuldade" size=1 id="nivelDificuldade">
                 <option>Fácil</option>
                 <option>Difícil</option>
               </select>
-              <p class="configurar"> Modo jogo </p> 
+              <p class="configurar"> Modo jogo </p>
               <select class="seletor" name="Modo do Jogo" size=1 id="modoJogo">
                 <option>Robô</option>
                 <option>Adversário</option>
               </select>
-              <p class="configurar" id="demo1"> Número de Buracos: 6 </p> 
+              <p class="configurar" id="demo1"> Número de Buracos: 6 </p>
                 <input type="range" min="4" max="8" value="6" id="holeSlider">
               <p class = "configurar" id="demo2">Sementes: 4</p>
                 <input type="range" min="4" max="10" value="4" id="seedSlider">

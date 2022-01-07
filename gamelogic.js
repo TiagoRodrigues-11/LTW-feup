@@ -1,9 +1,9 @@
-
 /**
  * Get a random number between min, max
  * @param {*} max Int: maximum number 
  * @param {*} min Int: minimum number 
  */
+
  function getRandomInt(min, max) {
     return (min + Math.floor(Math.random()*(max+1)));
 }
@@ -23,16 +23,38 @@ let stParentRight   = document.getElementById("colPRight");
 let playButton      = document.getElementById("playBtn");
 let seedSlider      = document.getElementById("seedSlider");
 let holeSlider      = document.getElementById("holeSlider");
-let seedNumber = seedSlider.value;
-let holeNumber = holeSlider.value;
+let seedNumber;
+let holeNumber;
 let seedNumberTemp = seedSlider.value;
 let holeNumberTemp = holeSlider.value;
 let modeTemp = RAND_BOT;
-let mode = RAND_BOT;
+let mode;
 let game = null;
 
 let nivelDificuldade = document.getElementById("nivelDificuldade");
 let modoJogo = document.getElementById("modoJogo"); 
+
+
+
+/*Servidor */
+let nick;
+let pass;
+const group = 64;
+let gameId;
+let eventSource;
+let pit;
+
+let login=false;
+let startGame=true;
+let endGame=false;
+
+let loginForm = document.getElementById("login");
+let createAccountForm = document.getElementById("createAccount");
+let Register = document.getElementById("Register");
+let Login = document.getElementById("Login");
+
+
+
 
 nivelDificuldade.oninput = function(){
     const v = modoJogo.value;
@@ -69,10 +91,7 @@ seedSlider.oninput = function(){
 
 
 playButton.onclick = function() {
-    /*if(game!== null){
-        console.log("novo");
-    }*/
-    if(playButton.innerHTML === "Desistir") {
+    if(mode!==PVP && playButton.innerHTML === "Desistir") {
         game.gameOver();
         playButton.innerHTML = "Novo Jogo";
     }
@@ -97,6 +116,30 @@ playButton.onclick = function() {
         playButton.innerHTML = "Desistir";
     }
     
+    if(mode===PVP && playButton.innerHTML === "Desistir") {
+        leave();
+        playButton.innerHTML = "Novo Jogo";
+    }
+    else if(modeTemp===PVP){
+        while(contaParentUp.firstChild) {
+            contaParentUp.removeChild(contaParentUp.firstChild);
+        }
+        while(contaParentDown.firstChild) {
+            contaParentDown.removeChild(contaParentDown.firstChild);
+        }
+        while(stParentLeft.firstChild) {
+            stParentLeft.removeChild(stParentLeft.firstChild);
+        }
+        while(stParentRight.firstChild) {
+            stParentRight.removeChild(stParentRight.firstChild);
+        }
+        mode = modeTemp;
+        holeNumber = holeNumberTemp;
+        seedNumber = seedNumberTemp;
+        join(holeNumber, seedNumber);
+        playButton.innerHTML = "Desistir";
+    }
+
 }
 
 class Hole {
@@ -440,47 +483,49 @@ class Game {
     setup() {
         if(mode === PVP) {
             for(let i = 0; i < holeNumber; i++) {
-                let holeTemp = this.topRow.holes[i];
-                
+                let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
-                    if(game.turn && !holeTemp.empty()) {
+                    if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
-                        if(terminate()) decideWinner();
-                        if(temp != "s2") {
+                        if(endGame) decideWinner();
+                        if(temp != "s1") {
+                            notify(parseInt(holeTemp.id[1])-1);
+                            game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
+                            //game.turn = ADVERSARY;
 
-                            game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
-                            game.turn = PLAYER;
+                            //pvpPlay();
                         }
-                    }
-                    if(game.topRow.noSeeds() && game.turn === ADVERSARY && terminate(true)) {
-                        decideWinner();
+                        if(game.bottomRow.noSeeds() && game.turn === PLAYER && endGame) {
+                            decideWinner();
+                        }
                     }
                 }
             }
         }
+        else{
+            for(let i = 0; i < holeNumber; i++) {
+                let holeTemp = this.bottomRow.holes[i];
+                holeTemp.hole.onclick = function() {
+                    if(!game.turn && !holeTemp.empty()) {
+                        let temp = game.seed(holeTemp.id);
+                        if(terminate()) decideWinner();
+                        if(temp != "s1") {
 
-        for(let i = 0; i < holeNumber; i++) {
-            let holeTemp = this.bottomRow.holes[i];
-            holeTemp.hole.onclick = function() {
-                if(!game.turn && !holeTemp.empty()) {
-                    let temp = game.seed(holeTemp.id);
-                    if(terminate()) decideWinner();
-                    if(temp != "s1") {
+                            game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
+                            game.turn = ADVERSARY;
 
-                        game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
-                        game.turn = ADVERSARY;
-
-                        switch(mode) {
-                            case RAND_BOT:
-                                setTimeout(randPlay, 1000);
-                                break;
-                            case BEST_BOT:
-                                setTimeout(bestPlay, 1000);
-                                break;
+                            switch(mode) {
+                                case RAND_BOT:
+                                    setTimeout(randPlay, 1000);
+                                    break;
+                                case BEST_BOT:
+                                    setTimeout(bestPlay, 1000);
+                                    break;
+                            }
                         }
-                    }
-                    if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
-                        decideWinner();
+                        if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
+                            decideWinner();
+                        }
                     }
                 }
             }
@@ -549,6 +594,26 @@ function randPlay() {
     }
 } 
 
+function pvpPlay(){
+    while(true) {
+        let i = pit;
+
+        let holeTemp = game.topRow.holes[i];
+        if(holeTemp.empty()) continue;
+        let temp = game.seed(holeTemp.id);
+
+        game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
+
+        if(endGame) decideWinner();
+        //game.turn = PLAYER;
+
+        if(game.topRow.noSeeds() && game.turn === ADVERSARY && endGame) {
+            decideWinner();
+        }
+        return;
+    }
+}
+
 function terminate(force = false) {
     if(force) {
         let newSeedsTop = 0, newSeedsBottom = 0;
@@ -607,4 +672,213 @@ function decideWinner(winner = null) {
     }
 
     game.turn = null;
+}
+
+
+
+
+
+/*funções da parte do servidor */
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    document.getElementById("linkCreateAccount").addEventListener("click", ()=>{
+        loginForm.classList.add("form--hidden");
+        createAccountForm.classList.remove("form--hidden");
+    });
+
+    document.getElementById("linkLogin").addEventListener("click", ()=>{
+        loginForm.classList.remove("form--hidden");
+        createAccountForm.classList.add("form--hidden");
+    });
+
+});
+
+Register.onclick = function(){
+    let EmailReg = document.getElementById("createEmail");
+    let PassReg = document.getElementById("createPass");
+    const createEmail = EmailReg.value;
+    const createPass = PassReg.value;
+
+    modal[0].style.display = "none";
+
+    register(createEmail, createPass);
+}
+
+Login.onclick = function(){
+    let EmailLog = document.getElementById("loginEmail");
+    let PassLog = document.getElementById("loginPassword");
+    const loginEmail = EmailLog.value;
+    const loginPass = PassLog.value;
+
+    modal[0].style.display = "none";
+
+    register(loginEmail, loginPass);
+}
+
+
+function register(email, password){
+    nick=email;
+    pass = password;
+    const registar = {
+        "nick": email,
+        "password": password
+    }
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register",{
+        method: 'POST',
+        body: JSON.stringify(registar),
+    })
+    .then(function(response) {
+        if(response.ok) {
+            nick=email;
+            pass=password;
+            login=true;
+            alert("You´re Logged In!");
+            console.log(nick + " " + pass);
+        } else{
+            console.log('erro: ' + response.status + ": " +  response.statusText);  
+         }
+     })
+    .catch(console.log);
+    
+}
+
+function ranking(){
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/ranking", {
+        method: "POST",
+        body: JSON.stringify({})
+    })
+    .then(function(response){
+        if(response.ok) {
+            return response.json();
+        } else{
+           console.log('erro: ' + response.status + ": " +  response.statusText);  
+        }
+    })
+    .then(function(data){
+        console.log(data);
+    })
+}
+
+function join(cavidades, sementes){
+    if(!login) alert("Please loggin first!");
+    else{
+        const juntar = {
+            "group": group,
+            "nick": nick,
+            "password": pass,
+            "size": cavidades,
+            "initial": sementes
+        }
+
+        fetch("http://twserver.alunos.dcc.fc.up.pt:8008/join",{
+            method: 'POST',
+            body: JSON.stringify(juntar),
+        })
+        .then(function(response) {
+            if(response.ok) {
+                return response.json();
+            } else{
+            console.log('erro: ' + response.status + ": " +  response.statusText);  
+            }
+        })
+        .then(function(data){
+            gameId=data.game;
+            console.log(gameId);
+            update();
+        })
+        .catch(console.log);
+    }
+}
+
+function leave(){
+    const desistir = {
+        "game": gameId,
+        "nick": nick,
+        "password": pass
+    }
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/leave",{
+        method: 'POST',
+        body: JSON.stringify(desistir),
+    })
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } else{
+           console.log('erro: ' + response.status + ": " +  response.statusText);  
+        }
+     })
+     .then(function(data){
+         console.log("desistir");
+         console.log(data);
+     })
+    .catch(console.log);
+}
+
+function notify(move){
+    const notificar = {
+        "nick": nick,
+        "password": pass,
+        "game": gameId,
+        "move": move
+    }
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/notify",{
+        method: 'POST',
+        body: JSON.stringify(notificar),
+    })
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } else{
+           console.log('erro: ' + response.status + ": " +  response.statusText);  
+        }
+     })
+    .catch(console.log);
+}
+
+function update(){
+    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(nick) + "&game=" + encodeURIComponent(gameId));
+    eventSource.onmessage = function(event){
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if(data.hasOwnProperty("winner")){
+            if(data.winner==null) alert("Desistiu do jogo")
+            else{
+                if(data.winner==nick) winner=PLAYER;
+                else winner=ADVERSARY;
+                endGame = true;
+                console.log("Jogo Termina");
+                decideWinner();
+            }
+        }
+        else if(data.hasOwnProperty("board")){
+            if(startGame) {
+                console.log("Jogo começa");
+                game = new Game();
+                console.log(game);
+                startGame=false;
+            }
+
+            const pitTemp = data.pit;
+            if(pitTemp){
+                console.log(pitTemp);
+                if(data.board.turn===nick){
+                     pit=pitTemp; 
+                     pvpPlay();
+                }
+            }
+
+            const turn = data.board.turn;
+            if(turn===nick) {
+                game.turn=PLAYER
+                console.log("Your turn!");
+            }
+            else game.turn=ADVERSARY;
+
+        }
+        
+    }
 }

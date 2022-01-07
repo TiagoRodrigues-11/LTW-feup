@@ -2,11 +2,14 @@ let nick;
 let pass;
 const group = 64;
 let gameId;
-let evento
+let eventSource;
+
+let login=false;
 
 let loginForm = document.getElementById("login");
 let createAccountForm = document.getElementById("createAccount");
-let Register = document.getElementById("Register")
+let Register = document.getElementById("Register");
+let Login = document.getElementById("Login");
 
 function setFormMessage(formElement, type, message){
     const messageElement = formElement.querySelector(".form__message");
@@ -32,14 +35,25 @@ document.addEventListener("DOMContentLoaded", ()=>{
 });
 
 Register.onclick = function(){
-    let Email = document.getElementById("createEmail");
-    let Pass = document.getElementById("createPass");
-    const createEmail = Email.value;
-    const createPass = Pass.value;
+    let EmailReg = document.getElementById("createEmail");
+    let PassReg = document.getElementById("createPass");
+    const createEmail = EmailReg.value;
+    const createPass = PassReg.value;
 
     modal[0].style.display = "none";
 
     register(createEmail, createPass);
+}
+
+Login.onclick = function(){
+    let EmailLog = document.getElementById("loginEmail");
+    let PassLog = document.getElementById("loginPassword");
+    const loginEmail = EmailLog.value;
+    const loginPass = PassLog.value;
+
+    modal[0].style.display = "none";
+
+    register(loginEmail, loginPass);
 }
 
 
@@ -59,6 +73,8 @@ function register(email, password){
         if(response.ok) {
             nick=email;
             pass=password;
+            login=true;
+            alert("You´re Logged In!");
             console.log(nick + " " + pass);
         } else{
             console.log('erro: ' + response.status + ": " +  response.statusText);  
@@ -67,10 +83,6 @@ function register(email, password){
     .catch(console.log);
     
 }
-
-let score = document.getElementById("scoreBtn");
-
-score.onclick = ranking;
 
 function ranking(){
     fetch("http://twserver.alunos.dcc.fc.up.pt:8008/ranking", {
@@ -89,64 +101,35 @@ function ranking(){
     })
 }
 
-/*
-playButton.onclick = function() {
-    /*if(game!== null){
-        console.log("novo");
+function join(cavidades, sementes){
+    if(!login) alert("Please loggin first!");
+    else{
+        const juntar = {
+            "group": group,
+            "nick": nick,
+            "password": pass,
+            "size": cavidades,
+            "initial": sementes
+        }
+
+        fetch("http://twserver.alunos.dcc.fc.up.pt:8008/join",{
+            method: 'POST',
+            body: JSON.stringify(juntar),
+        })
+        .then(function(response) {
+            if(response.ok) {
+                return response.json();
+            } else{
+            console.log('erro: ' + response.status + ": " +  response.statusText);  
+            }
+        })
+        .then(function(data){
+            gameId=data.game;
+            console.log(gameId);
+            update();
+        })
+        .catch(console.log);
     }
-
-    if(modeTemp===PVP){
-        while(contaParentUp.firstChild) {
-            contaParentUp.removeChild(contaParentUp.firstChild);
-        }
-        while(contaParentDown.firstChild) {
-            contaParentDown.removeChild(contaParentDown.firstChild);
-        }
-        while(stParentLeft.firstChild) {
-            stParentLeft.removeChild(stParentLeft.firstChild);
-        }
-        while(stParentRight.firstChild) {
-            stParentRight.removeChild(stParentRight.firstChild);
-        }
-        holeNumber = holeNumberTemp;
-        seedNumber = seedNumberTemp;
-
-        join();
-        /*mode = modeTemp;
-        game = new Game();
-        console.log(game);
-        console.log(mode);
-        playButton.innerHTML = "Desistir";+
-    }
-
-}*/
-
-
-function join(){
-    const juntar = {
-        "group": group,
-        "nick": nick,
-        "password": pass,
-        "size": holeNumber,
-        "initial": seedNumber
-    }
-
-    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/join",{
-        method: 'POST',
-        body: JSON.stringify(juntar),
-    })
-    .then(function(response) {
-        if(response.ok) {
-            return response.json();
-        } else{
-           console.log('erro: ' + response.status + ": " +  response.statusText);  
-        }
-     })
-     .then(function(data){
-         gameId=data.game;
-         console.log(gameId);
-     })
-    .catch(console.log);
 }
 
 function leave(){
@@ -168,17 +151,17 @@ function leave(){
         }
      })
      .then(function(data){
-         
+         console.log(data);
      })
     .catch(console.log);
 }
 
-function notify(){
+function notify(move){
     const notificar = {
         "nick": nick,
         "password": pass,
         "game": gameId,
-        "move": 1
+        "move": move
     }
 
     fetch("http://twserver.alunos.dcc.fc.up.pt:8008/notify",{
@@ -193,11 +176,27 @@ function notify(){
         }
      })
      .then(function(data){
-         
+         console.log("notify");
+         console.log(data);
      })
     .catch(console.log);
 }
 
 function update(){
-    evento = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + nick + "&game=" + gameId);
+    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(nick) + "&game=" + encodeURIComponent(gameId));
+    eventSource.onmessage = function(event){
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if(data.hasOwnProperty("winner")){
+            console.log("Jogo Termina");
+        }
+        else{
+            const turn = data.board.turn;
+            if(turn===nick) {
+                console.log("Your turn!");
+            }
+        }
+        
+    }
+    return true;
 }
