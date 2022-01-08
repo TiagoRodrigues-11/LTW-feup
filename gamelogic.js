@@ -129,7 +129,6 @@ playButton.onclick = function() {
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
         join(holeNumber, seedNumber);
-        playButton.innerHTML = "Desistir";
     }
 
 }
@@ -540,7 +539,7 @@ class Game {
         if(mode===PVP) leave();
         game.bottomRow.gameOver();
         game.topRow.gameOver();
-        playButton.innerHTML("Novo Jogo");
+        playButton.innerHTML="Novo Jogo";
     }
     
 }
@@ -854,6 +853,7 @@ function update(){
                 game = new Game();
                 console.log(game);
                 startGame=false;
+                playButton.innerHTML = "Desistir";
             }
 
             const pit = data.pit;
