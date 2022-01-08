@@ -42,7 +42,6 @@ let pass;
 const group = 64;
 let gameId;
 let eventSource;
-let pit;
 
 let login=false;
 let startGame=true;
@@ -91,10 +90,7 @@ seedSlider.oninput = function(){
 
 
 playButton.onclick = function() {
-    if(mode!==PVP && playButton.innerHTML === "Desistir") {
-        game.gameOver();
-        playButton.innerHTML = "Novo Jogo";
-    }
+    if(playButton.innerHTML==="Desistir") game.gameOver();
     else if(modeTemp!==PVP){
         while(contaParentUp.firstChild) {
             contaParentUp.removeChild(contaParentUp.firstChild);
@@ -116,10 +112,6 @@ playButton.onclick = function() {
         playButton.innerHTML = "Desistir";
     }
     
-    if(mode===PVP && playButton.innerHTML === "Desistir") {
-        leave();
-        playButton.innerHTML = "Novo Jogo";
-    }
     else if(modeTemp===PVP){
         while(contaParentUp.firstChild) {
             contaParentUp.removeChild(contaParentUp.firstChild);
@@ -157,7 +149,6 @@ class Hole {
     }
 
     gameOver() {
-
         this.hole.parentNode.removeChild(this.hole);
 
         delete this.seedNumber;
@@ -487,17 +478,18 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
+
                         if(endGame) decideWinner();
+
                         if(temp != "s1") {
-                            notify(parseInt(holeTemp.id[1])-1);
+                            
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                             //game.turn = ADVERSARY;
 
                             //pvpPlay();
                         }
-                        if(game.bottomRow.noSeeds() && game.turn === PLAYER && endGame) {
-                            decideWinner();
-                        }
+                        notify(parseInt(holeTemp.id[1])-1);
+                        if(endGame) decideWinner();
                     }
                 }
             }
@@ -545,8 +537,10 @@ class Game {
     }
 
     gameOver() {
+        if(mode===PVP) leave();
         game.bottomRow.gameOver();
         game.topRow.gameOver();
+        playButton.innerHTML("Novo Jogo");
     }
     
 }
@@ -594,12 +588,10 @@ function randPlay() {
     }
 } 
 
-function pvpPlay(){
-    while(true) {
+function pvpPlay(pit){
         let i = pit;
 
         let holeTemp = game.topRow.holes[i];
-        if(holeTemp.empty()) continue;
         let temp = game.seed(holeTemp.id);
 
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
@@ -607,11 +599,7 @@ function pvpPlay(){
         if(endGame) decideWinner();
         //game.turn = PLAYER;
 
-        if(game.topRow.noSeeds() && game.turn === ADVERSARY && endGame) {
-            decideWinner();
-        }
         return;
-    }
 }
 
 function terminate(force = false) {
@@ -656,7 +644,9 @@ function decideWinner(winner = null) {
         else
             console.log("Adversary won!");
 
+        game.gameOver();
         game.turn = null;
+        startGame=true;
         return;
     }
 
@@ -671,7 +661,9 @@ function decideWinner(winner = null) {
         console.log("Adversary won!");
     }
 
+    game.gameOver();
     game.turn = null;
+    startGame=true;
 }
 
 
@@ -839,6 +831,8 @@ function notify(move){
     .catch(console.log);
 }
 
+let again=0;
+
 function update(){
     eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(nick) + "&game=" + encodeURIComponent(gameId));
     eventSource.onmessage = function(event){
@@ -851,7 +845,7 @@ function update(){
                 else winner=ADVERSARY;
                 endGame = true;
                 console.log("Jogo Termina");
-                decideWinner();
+                decideWinner(winner);
             }
         }
         else if(data.hasOwnProperty("board")){
@@ -862,21 +856,26 @@ function update(){
                 startGame=false;
             }
 
-            const pitTemp = data.pit;
-            if(pitTemp){
-                console.log(pitTemp);
-                if(data.board.turn===nick){
-                     pit=pitTemp; 
-                     pvpPlay();
+            const pit = data.pit;
+            if(pit){
+                console.log(pit);
+                if(game.turn===ADVERSARY){ 
+                     pvpPlay(pit);
                 }
             }
 
             const turn = data.board.turn;
             if(turn===nick) {
-                game.turn=PLAYER
+                game.turn=PLAYER;
+                again=1;
                 console.log("Your turn!");
             }
-            else game.turn=ADVERSARY;
+            else{
+                again=0;
+                game.turn=ADVERSARY;
+            }
+
+            
 
         }
         
