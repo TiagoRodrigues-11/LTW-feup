@@ -325,6 +325,7 @@ class Row {
     }
 
     gameOver() {
+        if(this.holes === null) return;
         for(let i = 0; i <= holeNumber; i++) {
             this.holes[i].gameOver();
         }
@@ -536,10 +537,12 @@ class Game {
     }
 
     gameOver() {
+        if(game !== null){
+            game.bottomRow.gameOver();
+            game.topRow.gameOver();
+            playButton.innerHTML="Novo Jogo";
+        }
         if(mode===PVP) leave();
-        game.bottomRow.gameOver();
-        game.topRow.gameOver();
-        playButton.innerHTML="Novo Jogo";
     }
     
 }
@@ -547,7 +550,6 @@ class Game {
 function bestPlay(){
     // temp = ["Array com jogadas", "Sementes no Storage(Nao importante para aqui)"];
     let moves = game.bestMove()[0];
-    console.log(moves);
     for(let i = 0; i < moves.length; i++) {
         if(moves[i] === -1 && terminate(true))
             decideWinner();
@@ -653,7 +655,7 @@ function decideWinner(winner = null) {
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
     if(playerSeeds > adversarySeeds) {
-        console.log("PLayer won!");
+        console.log("Player won!");
     } else if (playerSeeds === adversarySeeds) {
         console.log("Draw!");
     } else {
@@ -728,7 +730,7 @@ function register(email, password){
             alert("You´re Logged In!");
             console.log(nick + " " + pass);
         } else{
-            console.log('erro: ' + response.status + ": " +  response.statusText);  
+            console.log('Erro: ' + response.status + ": " +  response.statusText);  
          }
      })
     .catch(console.log);
@@ -744,7 +746,7 @@ function ranking(){
         if(response.ok) {
             return response.json();
         } else{
-           console.log('erro: ' + response.status + ": " +  response.statusText);  
+           console.log('Erro: ' + response.status + ": " +  response.statusText);  
         }
     })
     .then(function(data){
@@ -771,7 +773,7 @@ function join(cavidades, sementes){
             if(response.ok) {
                 return response.json();
             } else{
-            console.log('erro: ' + response.status + ": " +  response.statusText);  
+            console.log('Erro: ' + response.status + ": " +  response.statusText);  
             }
         })
         .then(function(data){
@@ -800,11 +802,10 @@ function leave(){
         } else{
            console.log('erro: ' + response.status + ": " +  response.statusText);  
         }
-     })
-     .then(function(data){
-         console.log("desistir");
-         console.log(data);
-     })
+    })
+    .then(function(data){
+        console.log("Desistir", data);
+    })
     .catch(console.log);
 }
 
