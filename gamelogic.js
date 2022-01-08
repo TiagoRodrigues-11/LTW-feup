@@ -90,7 +90,13 @@ seedSlider.oninput = function(){
 
 
 playButton.onclick = function() {
-    if(playButton.innerHTML==="Desistir") game.gameOver();
+    if(playButton.innerHTML==="Desistir"){
+        if(game===null) {
+            leave();
+            playButton.innerHTML="Novo Jogo";
+        }
+        else game.gameOver();
+    }
     else if(modeTemp!==PVP){
         while(contaParentUp.firstChild) {
             contaParentUp.removeChild(contaParentUp.firstChild);
@@ -129,6 +135,7 @@ playButton.onclick = function() {
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
         join(holeNumber, seedNumber);
+        if(login) playButton.innerHTML = "Desistir";
     }
 
 }
@@ -803,9 +810,6 @@ function leave(){
            console.log('erro: ' + response.status + ": " +  response.statusText);  
         }
     })
-    .then(function(data){
-        console.log("Desistir", data);
-    })
     .catch(console.log);
 }
 
@@ -854,7 +858,6 @@ function update(){
                 game = new Game();
                 console.log(game);
                 startGame=false;
-                playButton.innerHTML = "Desistir";
             }
 
             const pit = data.pit;
