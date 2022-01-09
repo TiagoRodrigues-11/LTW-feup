@@ -93,7 +93,24 @@ playButton.onclick = function() {
             leave(gameId, nick, pass);
             playButton.innerHTML="Novo Jogo";
         }
-        else game.gameOver();
+        else if(mode !== PVP) {
+            switch(game.turn) {
+                case PLAYER:
+                    decideWinner(ADVERSARY);
+                    break;
+                case ADVERSARY:
+                    decideWinner(PLAYER);
+                    break;
+                default:
+                    console.log("Error: game.turn = " + game.turn);
+                    break;  
+            }
+        }
+        else if(mode === PVP) {
+            leave(gameId, nick, pass);
+        }
+        else return;
+
     }
     else if(modeTemp!==PVP){
         while(contaParentUp.firstChild) {
@@ -641,8 +658,9 @@ function terminate(force = false) {
     }
     return false;
 }
-
+let global = 0;
 function decideWinner(winner = null) {
+    console.log(++global);
     if(winner !== null) {
         if(winner === PLAYER){
             //console.log("PLayer won!");
