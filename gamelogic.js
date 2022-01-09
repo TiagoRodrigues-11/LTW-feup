@@ -92,7 +92,7 @@ seedSlider.oninput = function(){
 playButton.onclick = function() {
     if(playButton.innerHTML==="Desistir"){
         if(game===null) {
-            leave();
+            leave(gameId, nick, pass);
             playButton.innerHTML="Novo Jogo";
         }
         else game.gameOver();
@@ -133,10 +133,10 @@ playButton.onclick = function() {
         mode = modeTemp;
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
-        join(holeNumber, seedNumber);
+        join(group, nick, pass, holeNumber, seedNumber);
         if(login) playButton.innerHTML = "Desistir";
     }
-
+    console.log(game);
 }
 
 class Hole {
@@ -494,7 +494,7 @@ class Game {
 
                             //pvpPlay();
                         }
-                        notify(parseInt(holeTemp.id[1])-1);
+                        notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
                         if(endGame) decideWinner();
                     }
                 }
@@ -548,7 +548,7 @@ class Game {
             game.topRow.gameOver();
             playButton.innerHTML="Novo Jogo";
         }
-        if(mode===PVP) leave();
+        if(mode===PVP) leave(gameId, nick, pass);
     }
     
 }
@@ -678,6 +678,7 @@ function decideWinner(winner = null) {
     game.gameOver();
     game.turn = null;
     startGame=true;
+    endGame=false;
 }
 
 
@@ -768,13 +769,13 @@ function ranking(){
     })
 }
 
-function join(cavidades, sementes){
+function join(grupo, email, password, cavidades, sementes){
     if(!login) alert("Please loggin first!");
     else{
         const juntar = {
-            "group": group,
-            "nick": nick,
-            "password": pass,
+            "group": grupo,
+            "nick": email,
+            "password": password,
             "size": cavidades,
             "initial": sementes
         }
@@ -794,17 +795,17 @@ function join(cavidades, sementes){
         .then(function(data){
             gameId=data.game;
             console.log(gameId);
-            update();
+            update(gameId, nick);
         })
         .catch(console.log);
     }
 }
 
-function leave(){
+function leave(jogo, email, password){
     const desistir = {
-        "game": gameId,
-        "nick": nick,
-        "password": pass
+        "game": jogo,
+        "nick": email,
+        "password": password
     }
 
     fetch("http://twserver.alunos.dcc.fc.up.pt:8008/leave",{
@@ -821,11 +822,11 @@ function leave(){
     .catch(console.log);
 }
 
-function notify(move){
+function notify(email, password, jogo, move){
     const notificar = {
-        "nick": nick,
-        "password": pass,
-        "game": gameId,
+        "nick": email,
+        "password": password,
+        "game": jogo,
         "move": move
     }
 
@@ -845,13 +846,13 @@ function notify(move){
 
 let again=0;
 
-function update(){
-    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(nick) + "&game=" + encodeURIComponent(gameId));
+function update(jogo, email){
+    eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(email) + "&game=" + encodeURIComponent(jogo));
     eventSource.onmessage = function(event){
         const data = JSON.parse(event.data);
         console.log(data);
         if(data.hasOwnProperty("winner")){
-            if(data.winner==null) alert("Desistiu do jogo")
+            if(data.winner==null && !data.hasOwnProperty("board")) alert("Desistiu do jogo")
             else{
                 if(data.winner==nick) winner=PLAYER;
                 else winner=ADVERSARY;
