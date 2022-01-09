@@ -1,6 +1,5 @@
 /*
     Este ficheiro vai ser responsavel pelos modals
-
 */
 
 // Get the modal

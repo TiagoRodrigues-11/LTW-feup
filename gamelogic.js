@@ -4,8 +4,6 @@
  * @param {*} min Int: minimum number 
  */
 
-modal[2].onclick=ranking();
-
  function getRandomInt(min, max) {
     return (min + Math.floor(Math.random()*(max+1)));
 }
