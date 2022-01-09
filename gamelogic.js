@@ -767,23 +767,6 @@ function register(email, password){
     
 }
 
-function ranking(){
-    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/ranking", {
-        method: "POST",
-        body: JSON.stringify({})
-    })
-    .then(function(response){
-        if(response.ok) {
-            return response.json();
-        } else{
-           console.log('Erro: ' + response.status + ": " +  response.statusText);  
-        }
-    })
-    .then(function(data){
-        console.log(data);
-        /*Passar para html */
-    })
-}
 
 function join(grupo, email, password, cavidades, sementes){
     if(!login) alert("Please loggin first!");
