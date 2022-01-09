@@ -4,6 +4,8 @@
  * @param {*} min Int: minimum number 
  */
 
+modal[2].onclick=ranking();
+
  function getRandomInt(min, max) {
     return (min + Math.floor(Math.random()*(max+1)));
 }
@@ -63,7 +65,6 @@ nivelDificuldade.oninput = function(){
         if(d==="Fácil") modeTemp=RAND_BOT;
         else if (d==="Difícil") modeTemp=BEST_BOT;
     }
-    console.log(modeTemp);
 }
 
 modoJogo.oninput = function(){
@@ -74,7 +75,6 @@ modoJogo.oninput = function(){
         if(d==="Fácil") modeTemp=RAND_BOT;
         else if (d==="Difícil") modeTemp=BEST_BOT;
     }
-    console.log(modeTemp);
 }
 
 
@@ -114,7 +114,6 @@ playButton.onclick = function() {
         seedNumber = seedNumberTemp;
         mode = modeTemp;
         game = new Game();
-        console.log(game);
         playButton.innerHTML = "Desistir";
     }
     
@@ -647,10 +646,14 @@ function terminate(force = false) {
 
 function decideWinner(winner = null) {
     if(winner !== null) {
-        if(winner === PLAYER)
-            console.log("PLayer won!");
-        else
-            console.log("Adversary won!");
+        if(winner === PLAYER){
+            //console.log("PLayer won!");
+            alert("Player won");
+        }
+        else{
+            //console.log("Adversary won!");
+            alert("Adversary won");
+        }
 
         game.gameOver();
         game.turn = null;
@@ -662,11 +665,14 @@ function decideWinner(winner = null) {
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
     if(playerSeeds > adversarySeeds) {
-        console.log("Player won!");
+        //console.log("Player won!");
+        alert("Player won");
     } else if (playerSeeds === adversarySeeds) {
-        console.log("Draw!");
+        alert("Draw");
+        //console.log("Draw!");
     } else {
-        console.log("Adversary won!");
+        alert("Adversary won");
+        //console.log("Adversary won!");
     }
 
     game.gameOver();
@@ -735,8 +741,8 @@ function register(email, password){
             pass=password;
             login=true;
             alert("You´re Logged In!");
-            console.log(nick + " " + pass);
         } else{
+            alert("Email or Password don´t record our match");
             console.log('Erro: ' + response.status + ": " +  response.statusText);  
          }
      })
@@ -758,6 +764,7 @@ function ranking(){
     })
     .then(function(data){
         console.log(data);
+        /*Passar para html */
     })
 }
 
@@ -779,8 +786,9 @@ function join(cavidades, sementes){
         .then(function(response) {
             if(response.ok) {
                 return response.json();
-            } else{
-            console.log('Erro: ' + response.status + ": " +  response.statusText);  
+            } 
+            else{
+                console.log('Erro: ' + response.status + ": " +  response.statusText);  
             }
         })
         .then(function(data){
@@ -848,15 +856,15 @@ function update(){
                 if(data.winner==nick) winner=PLAYER;
                 else winner=ADVERSARY;
                 endGame = true;
-                console.log("Jogo Termina");
+                //console.log("Jogo Termina");
                 decideWinner(winner);
             }
         }
         else if(data.hasOwnProperty("board")){
             if(startGame) {
-                console.log("Jogo começa");
+                //console.log("Jogo começa");
                 game = new Game();
-                console.log(game);
+                //console.log(game);
                 startGame=false;
             }
 
