@@ -507,13 +507,15 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
-
+                        if(endGame && terminate()){
+                            decideWinner();
+                        }
                         if(temp != "s1") {
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
-                        if(endGame){
-                         decideWinner();
+                        if(endGame && terminate()){
+                            decideWinner();
                         }
                     }
                 }
@@ -636,7 +638,7 @@ function pvpPlay(pit){
 
     game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(endGame){
+        if(endGame && terminate()){
             decideWinner();
             console.log("pvp decide");
         }
@@ -891,12 +893,12 @@ function update(jogo, email){
             }
 
             const pit = data.pit;
-            if(pit){
-                console.log(pit);
-                if(game.turn===ADVERSARY){ 
-                     pvpPlay(pit);
-                }
+            
+            console.log(pit);
+            if(game.turn===ADVERSARY){ 
+                pvpPlay(pit);
             }
+            
 
             const turn = data.board.turn;
             if(turn===nick) {
