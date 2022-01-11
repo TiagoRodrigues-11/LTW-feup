@@ -91,7 +91,7 @@ playButton.onclick = function() {
     if(playButton.innerHTML==="Desistir"){
         if(game===null) {
             leave(gameId, nick, pass);
-            playButton.innerHTML="Novo Jogo";
+            playButton.innerHTML="Limpar";
         }
         else if(mode !== PVP) {
             switch(game.turn) {
@@ -113,6 +113,10 @@ playButton.onclick = function() {
         }
         else return;
 
+    }
+    else if (playButton.innerHTML === "Limpar") {
+        game.gameOver();
+        playButton.innerHTML="Novo Jogo";
     }
     else if(modeTemp!==PVP){
         while(contaParentUp.firstChild) {
@@ -538,13 +542,14 @@ class Game {
 
                             switch(mode) {
                                 case RAND_BOT:
-                                    setTimeout(randPlay, 1000);
+                                    setTimeout(randPlay, 500);
                                     break;
                                 case BEST_BOT:
-                                    setTimeout(bestPlay, 1000);
+                                    setTimeout(bestPlay, 500);
                                     break;
                             }
                         }
+                        
                         if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
                             decideWinner();
                         }
@@ -596,6 +601,10 @@ function bestPlay(){
 
 
 function randPlay() {
+    if(terminate()) {
+        decideWinner();
+        return;
+    }
     while(true) {
         let i = getRandomInt(0, holeNumber-1);
 
@@ -603,28 +612,37 @@ function randPlay() {
         if(holeTemp.empty()) continue;
         let temp = game.seed(holeTemp.id);
         if(temp === "s2") {
-            setTimeout(randPlay, 1000);
+            setTimeout(randPlay, 500);
+        }
+        else {
+            game.turn = PLAYER;
         }
 
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(terminate()) decideWinner();
-        game.turn = PLAYER;
+        if(terminate()) {
+            decideWinner();
+            return;
+        }
+        
 
         if(game.topRow.noSeeds() && game.turn === ADVERSARY && terminate(true)) {
             decideWinner();
+            return;
         }
+
+        
         return;
     }
 } 
 
 function pvpPlay(pit){
-        let i = pit;
+    let i = pit;
 
-        let holeTemp = game.topRow.holes[i];
-        let temp = game.seed(holeTemp.id);
+    let holeTemp = game.topRow.holes[i];
+    let temp = game.seed(holeTemp.id);
 
-        game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
+    game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
         if(endGame){
          decideWinner();
@@ -632,7 +650,17 @@ function pvpPlay(pit){
         }
         //game.turn = PLAYER;
 
-        return;
+
+    return;
+}
+
+function sleep(milliseconds) {
+var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+            break;
+        }
+    }
 }
 
 function terminate(force = false) {
@@ -674,15 +702,15 @@ function decideWinner(winner = null) {
     console.log(++global);
     if(winner !== null) {
         if(winner === PLAYER){
-            console.log("PLayer won! daqui");
+            console.log("PLayer won!");
             //alert("Player won");
         }
         else{
-            //console.log("Adversary won!");
+            console.log("Adversary won!");
+
             //alert("Adversary won");
         }
-
-        game.gameOver();
+        playButton.innerHTML = "Limpar";
         game.turn = null;
         startGame=true;
         return;
@@ -692,17 +720,18 @@ function decideWinner(winner = null) {
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
     if(playerSeeds > adversarySeeds) {
-        console.log("Player won! fora do if");
+
+        console.log("Player won!");
         //alert("Player won");
     } else if (playerSeeds === adversarySeeds) {
         //alert("Draw");
-        //console.log("Draw!");
+        console.log("Draw!");
     } else {
         //alert("Adversary won");
-        //console.log("Adversary won!");
+        console.log("Adversary won!");
     }
+    playButton.innerHTML = "Limpar";
 
-    game.gameOver();
     game.turn = null;
     startGame=true;
     endGame=false;
@@ -770,7 +799,7 @@ function register(email, password){
             login=true;
             alert("You´re Logged In!");
         } else{
-            alert("Email or Password don´t record our match");
+            alert("Email or Password dont record our match");
             console.log('Erro: ' + response.status + ": " +  response.statusText);  
          }
      })
