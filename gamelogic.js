@@ -110,6 +110,7 @@ playButton.onclick = function() {
         }
         else if(mode === PVP) {
             leave(gameId, nick, pass);
+            playButton.innerHTML="Limpar";
         }
         else return;
 
@@ -713,6 +714,7 @@ function decideWinner(winner = null) {
         playButton.innerHTML = "Limpar";
         game.turn = null;
         startGame=true;
+        endGame=false;
         return;
     }
 
