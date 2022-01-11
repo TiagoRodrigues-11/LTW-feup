@@ -512,8 +512,8 @@ class Game {
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
-                        if(endGame){
-                         decideWinner();
+                        if(endGame && terminate()){
+                            decideWinner();
                         }
                     }
                 }
@@ -636,7 +636,7 @@ function pvpPlay(pit){
 
     game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(endGame){
+        if(endGame && terminate()){
             decideWinner();
             console.log("pvp decide");
         }
@@ -666,27 +666,27 @@ function terminate(force = false) {
         game.topRow.holes[holeNumber].addSeeds(newSeedsTop);
         return true;
     }
-    if(game.turn == PLAYER) {
-        if(game.topRow.noSeeds()) {
-            let newSeeds = 0;
-            for(let i = 0; i < holeNumber; i++) {
-                newSeeds += game.bottomRow.holes[i].removeSeed();
-            }
-            game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
-            return true;
+    //if(game.turn == PLAYER) {
+    if(game.topRow.noSeeds()) {
+        let newSeeds = 0;
+        for(let i = 0; i < holeNumber; i++) {
+            newSeeds += game.bottomRow.holes[i].removeSeed();
         }
-    } else {
-        if(game.bottomRow.noSeeds()) {
-            let newSeeds = 0;
-            for(let i = 0; i < holeNumber; i++) {
-                newSeeds += game.topRow.holes[i].removeSeed();
-            }
-
-            game.topRow.holes[holeNumber].addSeeds(newSeeds);
-            return true;
-        }
-        
+        game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
+        return true;
     }
+
+    if(game.bottomRow.noSeeds()) {
+        let newSeeds = 0;
+        for(let i = 0; i < holeNumber; i++) {
+            newSeeds += game.topRow.holes[i].removeSeed();
+        }
+
+        game.topRow.holes[holeNumber].addSeeds(newSeeds);
+        return true;
+    }
+        
+
     return false;
 }
 let global = 0;
@@ -891,12 +891,12 @@ function update(jogo, email){
             }
 
             const pit = data.pit;
-            if(pit){
-                console.log(pit);
-                if(game.turn===ADVERSARY){ 
-                     pvpPlay(pit);
-                }
+            
+            console.log(pit);
+            if(game.turn===ADVERSARY){ 
+                    pvpPlay(pit);
             }
+
 
             const turn = data.board.turn;
             if(turn===nick) {
