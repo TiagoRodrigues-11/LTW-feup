@@ -91,7 +91,7 @@ playButton.onclick = function() {
     if(playButton.innerHTML==="Desistir"){
         if(game===null) {
             leave(gameId, nick, pass);
-            playButton.innerHTML="Limpar";
+            playButton.innerHTML="Novo Jogo";
         }
         else if(mode !== PVP) {
             switch(game.turn) {
@@ -507,7 +507,9 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
-
+                        if(endGame && terminate()){
+                            decideWinner();
+                        }
                         if(temp != "s1") {
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         }
@@ -664,6 +666,7 @@ function terminate(force = false) {
         }
         game.bottomRow.holes[holeNumber].addSeeds(newSeedsBottom);
         game.topRow.holes[holeNumber].addSeeds(newSeedsTop);
+        console.log(game);
         return true;
     }
     //if(game.turn == PLAYER) {
@@ -673,6 +676,7 @@ function terminate(force = false) {
             newSeeds += game.bottomRow.holes[i].removeSeed();
         }
         game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
+        console.log(game);
         return true;
     }
 
@@ -683,10 +687,12 @@ function terminate(force = false) {
         }
 
         game.topRow.holes[holeNumber].addSeeds(newSeeds);
+        console.log(game);
         return true;
     }
         
-
+    
+    console.log(game);
     return false;
 }
 let global = 0;
@@ -918,7 +924,8 @@ function update(jogo, email){
                 else winner=ADVERSARY;
                 endGame = true;
                 console.log("Jogo Termina data.hasown");
-                decideWinner(winner);
+                if(terminate())
+                    decideWinner(winner);
             }
         }
         
