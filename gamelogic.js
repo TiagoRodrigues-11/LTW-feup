@@ -501,29 +501,19 @@ class Game {
 
     setup() {
         if(mode === PVP) {
+            console.log(endGame);
             for(let i = 0; i < holeNumber; i++) {
                 let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
 
-                        if(endGame) {
-                            decideWinner();
-                            console.log("first end game");
-                        }
-
                         if(temp != "s1") {
-                            
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
-                            //game.turn = ADVERSARY;
-
-                            //pvpPlay();
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
                         if(endGame){
-
                          decideWinner();
-                         console.log("second end game");
                         }
                     }
                 }
@@ -576,6 +566,7 @@ class Game {
         if(game !== null){
             game.bottomRow.gameOver();
             game.topRow.gameOver();
+            endGame=false;
             playButton.innerHTML="Novo Jogo";
         }
     }
@@ -646,8 +637,8 @@ function pvpPlay(pit){
     game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
         if(endGame){
-         decideWinner();
-         console.log("pvp decide");
+            decideWinner();
+            console.log("pvp decide");
         }
         //game.turn = PLAYER;
 
