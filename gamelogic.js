@@ -97,9 +97,11 @@ playButton.onclick = function() {
             switch(game.turn) {
                 case PLAYER:
                     decideWinner(ADVERSARY);
+                    console.log("onclick player")
                     break;
                 case ADVERSARY:
                     decideWinner(PLAYER);
+                    console.log("onclick adversary")
                     break;
                 default:
                     console.log("Error: game.turn = " + game.turn);
@@ -500,7 +502,10 @@ class Game {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
 
-                        if(endGame) decideWinner();
+                        if(endGame) {
+                            decideWinner();
+                            console.log("first end game");
+                        }
 
                         if(temp != "s1") {
                             
@@ -510,7 +515,11 @@ class Game {
                             //pvpPlay();
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
-                        if(endGame) decideWinner();
+                        if(endGame){
+
+                         decideWinner();
+                         console.log("second end game");
+                        }
                     }
                 }
             }
@@ -563,7 +572,6 @@ class Game {
             game.topRow.gameOver();
             playButton.innerHTML="Novo Jogo";
         }
-        if(mode===PVP) leave(gameId, nick, pass);
     }
     
 }
@@ -618,7 +626,10 @@ function pvpPlay(pit){
 
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(endGame) decideWinner();
+        if(endGame){
+         decideWinner();
+         console.log("pvp decide");
+        }
         //game.turn = PLAYER;
 
         return;
@@ -663,12 +674,12 @@ function decideWinner(winner = null) {
     console.log(++global);
     if(winner !== null) {
         if(winner === PLAYER){
-            //console.log("PLayer won!");
-            alert("Player won");
+            console.log("PLayer won! daqui");
+            //alert("Player won");
         }
         else{
             //console.log("Adversary won!");
-            alert("Adversary won");
+            //alert("Adversary won");
         }
 
         game.gameOver();
@@ -681,13 +692,13 @@ function decideWinner(winner = null) {
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
     if(playerSeeds > adversarySeeds) {
-        //console.log("Player won!");
-        alert("Player won");
+        console.log("Player won! fora do if");
+        //alert("Player won");
     } else if (playerSeeds === adversarySeeds) {
-        alert("Draw");
+        //alert("Draw");
         //console.log("Draw!");
     } else {
-        alert("Adversary won");
+        //alert("Adversary won");
         //console.log("Adversary won!");
     }
 
@@ -843,24 +854,13 @@ function notify(email, password, jogo, move){
     .catch(console.log);
 }
 
-let again=0;
-
 function update(jogo, email){
     eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(email) + "&game=" + encodeURIComponent(jogo));
     eventSource.onmessage = function(event){
         const data = JSON.parse(event.data);
         console.log(data);
-        if(data.hasOwnProperty("winner")){
-            if(data.winner==null && !data.hasOwnProperty("board")) alert("Desistiu do jogo")
-            else{
-                if(data.winner==nick) winner=PLAYER;
-                else winner=ADVERSARY;
-                endGame = true;
-                //console.log("Jogo Termina");
-                decideWinner(winner);
-            }
-        }
-        else if(data.hasOwnProperty("board")){
+        
+        if(data.hasOwnProperty("board")){
             if(startGame) {
                 //console.log("Jogo começa");
                 game = new Game();
@@ -879,16 +879,25 @@ function update(jogo, email){
             const turn = data.board.turn;
             if(turn===nick) {
                 game.turn=PLAYER;
-                again=1;
                 console.log("Your turn!");
             }
             else{
-                again=0;
                 game.turn=ADVERSARY;
             }
 
             
 
+        }
+
+        if(data.hasOwnProperty("winner")){
+            if(data.winner==null && !data.hasOwnProperty("board")) alert("Desistiu do jogo")
+            else{
+                if(data.winner==nick) winner=PLAYER;
+                else winner=ADVERSARY;
+                endGame = true;
+                console.log("Jogo Termina data.hasown");
+                decideWinner(winner);
+            }
         }
         
     }
