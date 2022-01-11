@@ -91,7 +91,7 @@ playButton.onclick = function() {
     if(playButton.innerHTML==="Desistir"){
         if(game===null) {
             leave(gameId, nick, pass);
-            playButton.innerHTML="Limpar";
+            playButton.innerHTML="Novo Jogo";
         }
         else if(mode !== PVP) {
             switch(game.turn) {
@@ -666,29 +666,33 @@ function terminate(force = false) {
         }
         game.bottomRow.holes[holeNumber].addSeeds(newSeedsBottom);
         game.topRow.holes[holeNumber].addSeeds(newSeedsTop);
+        console.log(game);
         return true;
     }
-    if(game.turn == PLAYER) {
-        if(game.topRow.noSeeds()) {
-            let newSeeds = 0;
-            for(let i = 0; i < holeNumber; i++) {
-                newSeeds += game.bottomRow.holes[i].removeSeed();
-            }
-            game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
-            return true;
+    //if(game.turn == PLAYER) {
+    if(game.topRow.noSeeds()) {
+        let newSeeds = 0;
+        for(let i = 0; i < holeNumber; i++) {
+            newSeeds += game.bottomRow.holes[i].removeSeed();
         }
-    } else {
-        if(game.bottomRow.noSeeds()) {
-            let newSeeds = 0;
-            for(let i = 0; i < holeNumber; i++) {
-                newSeeds += game.topRow.holes[i].removeSeed();
-            }
-
-            game.topRow.holes[holeNumber].addSeeds(newSeeds);
-            return true;
-        }
-        
+        game.bottomRow.holes[holeNumber].addSeeds(newSeeds);
+        console.log(game);
+        return true;
     }
+
+    if(game.bottomRow.noSeeds()) {
+        let newSeeds = 0;
+        for(let i = 0; i < holeNumber; i++) {
+            newSeeds += game.topRow.holes[i].removeSeed();
+        }
+
+        game.topRow.holes[holeNumber].addSeeds(newSeeds);
+        console.log(game);
+        return true;
+    }
+        
+    
+    console.log(game);
     return false;
 }
 let global = 0;
@@ -900,6 +904,7 @@ function update(jogo, email){
             }
             
 
+
             const turn = data.board.turn;
             if(turn===nick) {
                 game.turn=PLAYER;
@@ -920,7 +925,8 @@ function update(jogo, email){
                 else winner=ADVERSARY;
                 endGame = true;
                 console.log("Jogo Termina data.hasown");
-                decideWinner(winner);
+                if(terminate())
+                    decideWinner(winner);
             }
         }
         
