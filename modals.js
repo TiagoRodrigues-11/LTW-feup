@@ -86,8 +86,8 @@ function ranking(){
         }
     })
     .then(function(data){
-        
-        let tbl = document.createElement('table');
+        console.log(data);
+        /*let tbl = document.createElement('table');
         tbl.id = "tableScore";
         let tr = document.createElement('tr');
 
@@ -133,6 +133,6 @@ function ranking(){
             tbl.appendChild(tr);
         }
 
-        document.getElementById("scoreTable").appendChild(tbl);
+        document.getElementById("scoreTable").appendChild(tbl);*/
     })
 }
