@@ -81,7 +81,7 @@ function register(request, response){
             try { 
                 query = JSON.parse(body);
                 query.password = crypto.createHash('md5').update(query.password).digest('hex');
-                console.log(query);
+                //console.log("query: " + query);
                 let dados = [];
  
                 fs.readFile('user.json',function(err,data) {
@@ -89,7 +89,7 @@ function register(request, response){
                     if(!err) {
                         if(data.length !== 0) {
                             dados = JSON.parse(data.toString());
-                            console.log("Dados:" + dados);
+                            //console.log("Dados:" + dados);
                             for(let i = 0; i < dados.length; i++) {
                                 if(dados[i].nick === query.nick) {
                                     const hashdata = crypto.createHash('md5').update(dados[i].password).digest('hex');
@@ -108,14 +108,34 @@ function register(request, response){
                             dados.push(query);
                         }
                         dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
+                        console.log(dados);
                         fs.writeFile('user.json', JSON.stringify(dados), function(err) {
                             if(!err) {
                                 answer.status = 200;
+                                
                             } else {
                                 answer.status = 400;
                             }
+                            console.log(answer);
                         });
 
+                    }
+                    else{
+                        console.log("ficheiro inexistente");
+                        if(!login) {
+                            dados.push(query);
+                        }
+                        dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
+                        console.log(dados);
+                        fs.writeFile('user.json', JSON.stringify(dados), function(err) {
+                            if(!err) {
+                                answer.status = 200;
+                                
+                            } else {
+                                answer.status = 400;
+                            }
+                            console.log(answer);
+                        });
                     }
                     
                 });
