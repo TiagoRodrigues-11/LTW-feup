@@ -16,57 +16,78 @@ const headers = {
 http.createServer(function (request, response) {
     const preq = url.parse(request.url,true);
     const pathname = preq.pathname;
-    let answer = {};
-
     switch(request.method) {
         case 'POST':
-            answer.body = doPost(pathname);
-            break;
+            switch(pathname){
+                case '/ranking':
+                    ranking(response);
+                    break;
+                case '/register':
+                    register(request, response);
+                    break;
+                default:
+                    response.writeHead(404, headers['plain']);
+                    response.end;
+                    break;
+            }
+        break;
+
         default:
-            answer.status = 400;
+            response.writeHead(400, headers['plain']);
+            response.end;
+            break;
     }
-    
-    if(answer.status === undefined)
-        answer.status = 200;
-    if(answer.style === undefined)
-        answer.style = 'plain';
 
-    console.log(answer);
-
-    response.writeHead(answer.status, headers[answer.style]);
-    response.write(answer.body);
     
-    if(answer.style === 'plain')
-        response.end();
 
 }).listen(PORT);
 
-function doPost(pathname){
-    var answer = {};
+function ranking(response){
 
-    switch(pathname) {
-        case '/ranking':
-            answer=ranking();
-            console.log(answer);
-            break;
-        case '/register':
-        
-            break;
-        default:
-            answer.status = 400;
-            break;
-    }
-
-    return answer;
-}
-
-function ranking(){
-    let ranking={};
+    let answer = {};
     fs.readFile('ranking.json',function(err,data){
         if(!err){
-            ranking=JSON.parse(data.toString());
-            console.log(ranking);
-            return ranking;
+
+            if(answer.status === undefined)
+                answer.status = 200;
+            if(answer.style === undefined)
+                answer.style = 'plain';
+
+            response.writeHead(answer.status, headers[answer.style]);
+            response.write(data.toString());
+
+            if(answer.style === 'plain')
+                response.end();
         }
     });
+
+}
+
+function register(request, response){
+    const body = [];
+    request
+        .on('data', (chunk) => { 
+            body.push(chunk); 
+        })
+        .on('end', () => {
+            try { 
+                query = JSON.parse(body);
+                fs.readFile('user.json',function(err,data){
+                    if(!err){
+                        let dados = JSON.parse(data.toString());
+                        for(let i=0; i<dados.length; i++) 
+                            console.log(dados[i].nick);
+                        
+                    }
+                });
+                /*fs.writeFile('user.json', JSON.stringify(query),function(err){
+                    if(!err){
+
+                    }
+                })*/
+             }
+            catch(err) {  /* erros de JSON */ }
+        })
+        .on('error', (err) => { console.log(err.message); });
+
 }
