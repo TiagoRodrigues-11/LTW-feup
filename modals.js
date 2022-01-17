@@ -74,7 +74,7 @@ window.onclick = function(event) {
 
 
 function ranking(){
-    fetch("http://twserver.alunos.dcc.fc.up.pt:9064/ranking", {
+    fetch(new URL("http://localhost:9064/ranking"), {
         method: "POST",
         body: JSON.stringify({})
     })

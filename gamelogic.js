@@ -787,7 +787,7 @@ function register(email, password){
         "password": password
     }
 
-    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register",{
+    fetch("http://localhost:9064/register",{
         method: 'POST',
         body: JSON.stringify(registar),
     })
