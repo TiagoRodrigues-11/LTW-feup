@@ -787,7 +787,8 @@ function register(email, password){
         "password": password
     }
 
-    fetch("http://localhost:9064/register",{
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:9064/register",{
         method: 'POST',
         body: JSON.stringify(registar),
     })
@@ -799,6 +800,23 @@ function register(email, password){
             alert("You´re Logged In!");
         } else{
             alert("Email or Password dont record our match");
+            console.log('Erro: ' + response.status + ": " +  response.statusText);  
+         }
+     })
+    .catch(console.log);
+    
+
+    // Just for playing porposes
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register",{
+        method: 'POST',
+        body: JSON.stringify(registar),
+    })
+    .then(function(response) {
+        if(response.ok) {
+            nick=email;
+            pass=password;
+            login=true;
+        } else{
             console.log('Erro: ' + response.status + ": " +  response.statusText);  
          }
      })
