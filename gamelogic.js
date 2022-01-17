@@ -15,7 +15,7 @@ const BEST_BOT = 2;
 const PLAYER = 0;
 const ADVERSARY = 1;
 
-
+let fixedUp = document.getElementById("fixedUpId");
 let contaParentUp   = document.getElementById("rowPUp");
 let contaParentDown = document.getElementById("rowPDown");
 let stParentLeft    = document.getElementById("colPLeft");
@@ -53,7 +53,9 @@ let Register = document.getElementById("Register");
 let Login = document.getElementById("Login");
 
 
-
+let turnBox = document.createElement("div");
+turnBox.id = "turnBox";
+turnBox.classList.add("turnBox");
 
 nivelDificuldade.oninput = function(){
     const v = modoJogo.value;
@@ -132,6 +134,15 @@ playButton.onclick = function() {
         while(stParentRight.firstChild) {
             stParentRight.removeChild(stParentRight.firstChild);
         }
+
+        
+        
+        // Change to turn
+        turnBox.innerHTML = "Your Turn";
+        
+
+        fixedUp.appendChild(turnBox);
+
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
         mode = modeTemp;
@@ -152,6 +163,10 @@ playButton.onclick = function() {
         while(stParentRight.firstChild) {
             stParentRight.removeChild(stParentRight.firstChild);
         }
+        // Change to turn
+        turnBox.innerHTML = "Your Turn";
+
+        fixedUp.appendChild(turnBox);
         mode = modeTemp;
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
@@ -507,6 +522,7 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
+                        turnBox.innerHTML = "Adv Turn";
                         if(endGame && terminate()){
                             decideWinner();
                         }
@@ -514,6 +530,7 @@ class Game {
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
+                        
                         if(endGame && terminate()){
                             decideWinner();
                         }
@@ -526,7 +543,9 @@ class Game {
                 let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
+                        
                         let temp = game.seed(holeTemp.id);
+                        turnBox.innerHTML = "Bot turn";
                         if(terminate()) decideWinner();
                         if(temp != "s1") {
 
@@ -541,6 +560,8 @@ class Game {
                                     setTimeout(bestPlay, 500);
                                     break;
                             }
+                            
+
                         }
                         
                         if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
@@ -570,7 +591,16 @@ class Game {
             game.topRow.gameOver();
             endGame=false;
             playButton.innerHTML="Novo Jogo";
+
+            let child = fixedUp.childNodes;
+            for(let i = 0; i < child.length; i++) {
+                if(child[i].id === "turnBox") {
+                    fixedUp.removeChild(child[i]);
+                    break;
+                }
+            }
         }
+        
     }
     
 }
@@ -588,7 +618,7 @@ function bestPlay(){
     }
     if(terminate()) decideWinner();
     game.turn = PLAYER;
-
+    turnBox.innerHTML = "Your turn";
 
     return;
 }
@@ -610,6 +640,7 @@ function randPlay() {
         }
         else {
             game.turn = PLAYER;
+            turnBox.innerHTML = "Your turn";
         }
 
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
@@ -638,12 +669,12 @@ function pvpPlay(pit){
 
     game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(endGame && terminate()){
-            decideWinner();
-            console.log("pvp decide");
-        }
-        //game.turn = PLAYER;
-
+    if(endGame && terminate()){
+        decideWinner();
+        console.log("pvp decide");
+    }
+    //game.turn = PLAYER;
+    turnBox.innerHTML = "Your Turn";
 
     return;
 }

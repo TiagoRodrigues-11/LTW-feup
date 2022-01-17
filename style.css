@@ -387,3 +387,17 @@ table, th, td {
   height: 100%;
   z-index: -1;
 }
+
+.turnBox {
+  position:absolute;
+
+  width: 15%;
+  height: 5%;
+  background: radial-gradient( #D5B190,#5e3f17);
+  opacity: 0.5;
+  border-radius: 25%;
+  transform: translateY(-40px);
+  font-size: xx-large;
+  color: black;
+  text-align: center;
+}
