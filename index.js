@@ -5,6 +5,9 @@ var url = require('url');
 var fs = require('fs');
 const crypto = require('crypto');
 
+function hash(psw) {
+    return crypto.createHash('md5').update(psw).digest('hex');
+}
 
 const headers = {
     plain: {
@@ -69,7 +72,7 @@ function ranking(response){
 function register(request, response){
     const body = [];
     let answer = {};
-
+    let query = {};
     let login = false;
 
 
@@ -80,8 +83,8 @@ function register(request, response){
         .on('end', () => {
             try { 
                 query = JSON.parse(body);
-                query.password = crypto.createHash('md5').update(query.password).digest('hex');
-                //console.log("query: " + query);
+                query.password = hash(query.password);
+                console.log(query);
                 let dados = [];
  
                 fs.readFile('user.json',function(err,data) {
@@ -90,12 +93,12 @@ function register(request, response){
                         if(data.length !== 0) {
                             dados = JSON.parse(data.toString());
                             //console.log("Dados:" + dados);
-                            for(let i = 0; i < dados.length; i++) {
+                            for(let i = 0; i < dados.length && !login; i++) {
                                 if(dados[i].nick === query.nick) {
-                                    const hashdata = crypto.createHash('md5').update(dados[i].password).digest('hex');
+                                    
                                     login = true;
-                                    console.log(hashdata);
-                                    if(hashdata === query.password) {
+                                    console.log(dados[i]);
+                                    if(dados[i].password === query.password) {
                                         answer.status = 200;
                                     } else {
                                         answer.status = 401;
