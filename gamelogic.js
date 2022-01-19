@@ -15,7 +15,9 @@ const BEST_BOT = 2;
 const PLAYER = 0;
 const ADVERSARY = 1;
 
+let rank = {"nome": "Jogador", "win": 0, "games": 0};
 
+let fixedUp = document.getElementById("fixedUpId");
 let contaParentUp   = document.getElementById("rowPUp");
 let contaParentDown = document.getElementById("rowPDown");
 let stParentLeft    = document.getElementById("colPLeft");
@@ -33,7 +35,7 @@ let game = null;
 
 let nivelDificuldade = document.getElementById("nivelDificuldade");
 let modoJogo = document.getElementById("modoJogo"); 
-
+let inicioJogo = document.getElementById("inicioJogo");
 
 
 /*Servidor */
@@ -53,7 +55,9 @@ let Register = document.getElementById("Register");
 let Login = document.getElementById("Login");
 
 
-
+let turnBox = document.createElement("div");
+turnBox.id = "turnBox";
+turnBox.classList.add("turnBox");
 
 nivelDificuldade.oninput = function(){
     const v = modoJogo.value;
@@ -132,6 +136,15 @@ playButton.onclick = function() {
         while(stParentRight.firstChild) {
             stParentRight.removeChild(stParentRight.firstChild);
         }
+
+        
+        
+        // Change to turn
+        turnBox.innerHTML = "Your Turn";
+        
+
+        fixedUp.appendChild(turnBox);
+
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
         mode = modeTemp;
@@ -152,6 +165,10 @@ playButton.onclick = function() {
         while(stParentRight.firstChild) {
             stParentRight.removeChild(stParentRight.firstChild);
         }
+        // Change to turn
+        turnBox.innerHTML = "Your Turn";
+
+        fixedUp.appendChild(turnBox);
         mode = modeTemp;
         holeNumber = holeNumberTemp;
         seedNumber = seedNumberTemp;
@@ -507,6 +524,7 @@ class Game {
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
                         let temp = game.seed(holeTemp.id);
+                        turnBox.innerHTML = "Adv Turn";
                         if(endGame && terminate()){
                             decideWinner();
                         }
@@ -514,6 +532,7 @@ class Game {
                             game.updateEmptyHole(game, game.bottomRow, game.topRow, temp);
                         }
                         notify(nick, pass, gameId, parseInt(holeTemp.id[1])-1);
+                        
                         if(endGame && terminate()){
                             decideWinner();
                         }
@@ -526,7 +545,9 @@ class Game {
                 let holeTemp = this.bottomRow.holes[i];
                 holeTemp.hole.onclick = function() {
                     if(!game.turn && !holeTemp.empty()) {
+                        
                         let temp = game.seed(holeTemp.id);
+                        turnBox.innerHTML = "Bot turn";
                         if(terminate()) decideWinner();
                         if(temp != "s1") {
 
@@ -541,6 +562,8 @@ class Game {
                                     setTimeout(bestPlay, 500);
                                     break;
                             }
+                            
+
                         }
                         
                         if(game.bottomRow.noSeeds() && game.turn === PLAYER && terminate(true)) {
@@ -570,7 +593,16 @@ class Game {
             game.topRow.gameOver();
             endGame=false;
             playButton.innerHTML="Novo Jogo";
+
+            let child = fixedUp.childNodes;
+            for(let i = 0; i < child.length; i++) {
+                if(child[i].id === "turnBox") {
+                    fixedUp.removeChild(child[i]);
+                    break;
+                }
+            }
         }
+        
     }
     
 }
@@ -588,7 +620,7 @@ function bestPlay(){
     }
     if(terminate()) decideWinner();
     game.turn = PLAYER;
-
+    turnBox.innerHTML = "Your turn";
 
     return;
 }
@@ -610,6 +642,7 @@ function randPlay() {
         }
         else {
             game.turn = PLAYER;
+            turnBox.innerHTML = "Your turn";
         }
 
         game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
@@ -638,12 +671,12 @@ function pvpPlay(pit){
 
     game.updateEmptyHole(game, game.topRow, game.bottomRow, temp);
 
-        if(endGame && terminate()){
-            decideWinner();
-            console.log("pvp decide");
-        }
-        //game.turn = PLAYER;
-
+    if(endGame && terminate()){
+        decideWinner();
+        console.log("pvp decide");
+    }
+    //game.turn = PLAYER;
+    turnBox.innerHTML = "Your Turn";
 
     return;
 }
@@ -691,8 +724,6 @@ function terminate(force = false) {
         return true;
     }
         
-    
-    console.log(game);
     return false;
 }
 let global = 0;
@@ -700,10 +731,13 @@ function decideWinner(winner = null) {
     console.log(++global);
     if(winner !== null) {
         if(winner === PLAYER){
+            rank.win++;
+            rank.games++;
             console.log("PLayer won!");
             //alert("Player won");
         }
         else{
+            rank.games++;
             console.log("Adversary won!");
 
             //alert("Adversary won");
@@ -719,13 +753,16 @@ function decideWinner(winner = null) {
     let adversarySeeds = game.topRow.holes[holeNumber].seedNumber;
 
     if(playerSeeds > adversarySeeds) {
-
+        rank.win++;
+        rank.games++;
         console.log("Player won!");
         //alert("Player won");
     } else if (playerSeeds === adversarySeeds) {
         //alert("Draw");
+        rank.games++;
         console.log("Draw!");
     } else {
+        rank.games++;
         //alert("Adversary won");
         console.log("Adversary won!");
     }
@@ -787,7 +824,8 @@ function register(email, password){
         "password": password
     }
 
-    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register",{
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:9064/register",{
         method: 'POST',
         body: JSON.stringify(registar),
     })
@@ -799,6 +837,23 @@ function register(email, password){
             alert("You´re Logged In!");
         } else{
             alert("Email or Password dont record our match");
+            console.log('Erro: ' + response.status + ": " +  response.statusText);  
+         }
+     })
+    .catch(console.log);
+    
+
+    // Just for playing porposes
+    fetch("http://twserver.alunos.dcc.fc.up.pt:8008/register",{
+        method: 'POST',
+        body: JSON.stringify(registar),
+    })
+    .then(function(response) {
+        if(response.ok) {
+            nick=email;
+            pass=password;
+            login=true;
+        } else{
             console.log('Erro: ' + response.status + ": " +  response.statusText);  
          }
      })

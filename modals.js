@@ -35,7 +35,12 @@ for(let i = 0; i < btn.length; i++){
         
         modal[i].style.display = "block";
         if(i === 2) {
-            ranking();
+            if(login){
+                ranking();
+            }
+            else{
+                console.log(rank);
+            }
         }
     }
 }
@@ -48,7 +53,12 @@ for(let i = 0; i < span.length; i++) {
         let temp = document.getElementById("scoreTable").childNodes;
         for(let i = 0; i < temp.length; i++) {
             if(temp[i].id ==="tableScore") {
-                document.getElementById("scoreTable").removeChild(temp[i]);
+                if(login){
+                    document.getElementById("scoreTable").removeChild(temp[i]);
+                }
+                else{
+                    console.log(rank);
+                }
             }
         }
 
@@ -74,7 +84,7 @@ window.onclick = function(event) {
 
 
 function ranking(){
-    fetch("http://twserver.alunos.dcc.fc.up.pt:9064/ranking", {
+    fetch(new URL("http://twserver.alunos.dcc.fc.up.pt:9064/ranking"), {
         method: "POST",
         body: JSON.stringify({})
     })
@@ -86,8 +96,8 @@ function ranking(){
         }
     })
     .then(function(data){
-        
-        let tbl = document.createElement('table');
+        console.log(data);
+        /*let tbl = document.createElement('table');
         tbl.id = "tableScore";
         let tr = document.createElement('tr');
 
@@ -133,6 +143,6 @@ function ranking(){
             tbl.appendChild(tr);
         }
 
-        document.getElementById("scoreTable").appendChild(tbl);
+        document.getElementById("scoreTable").appendChild(tbl);*/
     })
 }

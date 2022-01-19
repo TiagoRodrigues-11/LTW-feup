@@ -1,61 +1,156 @@
 let PORT     = 9064;
 
-let http = require('http');
-let url = require('url');
-let fs = require('fs');
+var http = require('http');
+var url = require('url');
+var fs = require('fs');
+const crypto = require('crypto');
+
+function hash(psw) {
+    return crypto.createHash('md5').update(psw).digest('hex');
+}
 
 const headers = {
     plain: {
         'Content-Type': 'application/javascript',
         'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'        
+        'Access-Control-Allow-Origin': '*'  ,
+        'Access-Control-Allow-Credentials' : true       
     },
-    sse: {    
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*',
-        'Connection': 'keep-alive'
-    }
 };
 
 http.createServer(function (request, response) {
     const preq = url.parse(request.url,true);
     const pathname = preq.pathname;
-    let answer = {};
-
     switch(request.method) {
         case 'POST':
-            answer = doPost(pathname);
-        default:
-            answer.status = 400;
-    }
-    
-    if(answer.status === undefined)
-        answer.status = 200;
-    if(answer.style === undefined)
-        answer.style = 'plain';
+            switch(pathname){
+                case '/ranking':
+                    ranking(response);
+                    break;
+                case '/register':
+                    register(request, response);
+                    break;
+                default:
+                    response.writeHead(404, headers['plain']);
+                    response.end();
+                    break;
 
-    response.writeHead(answer.status, headers[answer.style]);
-    response.write("srinf qualque");
-    if(answer.style === 'plain')
-        response.end();
+            }
+        break;
+
+        default:
+            response.writeHead(400, headers['plain']);
+            response.end();
+            break;
+    }
+
+    
 
 }).listen(PORT);
 
-function doPost(pathname){
-    var answer = {};
+function ranking(response){
 
-    switch(pathname) {
-        case '/ranking':
-            answer.mensagem="ranking";
-            break;
-        case '/register':
-        
-            break;
-        default:
-            answer.status = 400;
-            break;
-    }
+    let answer = {};
+    fs.readFile('ranking.json',function(err,data){
+        if(!err){
 
-    return answer;
+            if(answer.status === undefined)
+                answer.status = 200;
+            if(answer.style === undefined)
+                answer.style = 'plain';
+
+            response.writeHead(answer.status, headers[answer.style]);
+            response.write(data.toString());
+
+            if(answer.style === 'plain')
+                response.end();
+        }
+    });
+
+}
+
+function register(request, response){
+    const body = [];
+    let answer = {status: 200};
+    let query = {};
+    let login = false;
+
+
+    request
+        .on('data', (chunk) => { 
+            body.push(chunk); 
+        })
+        .on('end', () => {
+            try { 
+                query = JSON.parse(body);
+                query.password = hash(query.password);
+
+                let dados = [];
+ 
+                fs.readFile('user.json',function(err,data) {
+                    
+                    if(!err) {
+                        if(data.length !== 0) {
+                            dados = JSON.parse(data.toString());
+
+                            for(let i = 0; i < dados.length && !login; i++) {
+
+                                if(dados[i].nick === query.nick) {
+                                    
+                                    login = true;
+                                    if(dados[i].password === query.password) {
+                                        answer.status = 200;
+                                    } else {
+                                        answer.status = 401;
+                                    }
+                                }
+                            }
+                        }
+
+                        if(answer.status !== 401) {
+                            if(!login) {
+                                dados.push(query);
+                            }
+                            dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
+
+                            fs.writeFile('user.json', JSON.stringify(dados), function(err) {
+                                if(err) {
+                                    answer.status = 400;
+                                } else {
+                                    answer.status = 200;
+                                }
+                            });
+                        }
+
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
+
+                    }
+                    else{
+                        console.log("Don't exist file!");
+                        if(!login) {
+                            dados.push(query);
+                        }
+                        dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
+
+                        fs.writeFile('user.json', JSON.stringify(dados), function(err) {
+                            if(!err) 
+                                answer.status = 200;
+                            else 
+                                answer.status = 400;
+ 
+                        });
+                        
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
+                    }
+
+                    
+                });
+                
+            }
+            catch(err) {  /* erros de JSON */ }
+        })
+        .on('error', (err) => { console.log(err.message); });
+
 }

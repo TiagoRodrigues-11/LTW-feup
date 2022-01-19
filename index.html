@@ -6,9 +6,8 @@
         <meta charset="utf-8">
         <title>MANCALA</title>
         <link rel="stylesheet" href="style.css" type="text/css">
-        <script src="index.js" defer></script>
-        <script src="modals.js" defer></script>
         <script src="gamelogic.js" defer></script>
+        <script src="modals.js" defer></script>
       </head>
 
 
@@ -17,7 +16,7 @@
       <img src="logo.png" alt="Logo" class="logo">
 
 
-      <div class="fixedUp">
+      <div class="fixedUp" id="fixedUpId">
         <div class="board">
           <div class="columnLeft" id="colPRight"></div>
           <div class="containers">
@@ -178,6 +177,11 @@
               <select class="seletor" name="Modo do Jogo" size=1 id="modoJogo">
                 <option>Robô</option>
                 <option>Adversário</option>
+              </select>
+              <p class="configurar"> Inicio do Jogo </p>
+              <select class="seletor" name="Inicio do Jogo" size=1 id="inicioJogo">
+                <option>Player</option>
+                <option>Adversary</option>
               </select>
               <p class="configurar" id="demo1"> Número de Buracos: 6 </p>
                 <input type="range" min="4" max="8" value="6" id="holeSlider">
