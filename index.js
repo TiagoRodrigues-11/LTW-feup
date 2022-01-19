@@ -60,7 +60,7 @@ function ranking(response){
                 answer.style = 'plain';
 
             response.writeHead(answer.status, headers[answer.style]);
-            response.write(data.toString());
+            response.write(JSON.stringify(data));
 
             if(answer.style === 'plain')
                 response.end();

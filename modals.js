@@ -35,12 +35,20 @@ for(let i = 0; i < btn.length; i++){
         
         modal[i].style.display = "block";
         if(i === 2) {
-            if(login){
-                ranking();
-            }
-            else{
+            ranking();
+        
+            if(typeof(Storage) !== "undefined"){
+                if(localStorage.getItem('win') && localStorage.getItem('games')){
+                    rank['win'] = localStorage.getItem('win');
+                    rank['games'] = localStorage.getItem('games');
+                }
+                tabela();
                 console.log(rank);
             }
+            else{
+                console.log("Não há webstorage");
+            }
+            
         }
     }
 }
@@ -53,12 +61,9 @@ for(let i = 0; i < span.length; i++) {
         let temp = document.getElementById("scoreTable").childNodes;
         for(let i = 0; i < temp.length; i++) {
             if(temp[i].id ==="tableScore") {
-                if(login){
-                    document.getElementById("scoreTable").removeChild(temp[i]);
-                }
-                else{
-                    console.log(rank);
-                }
+                
+                document.getElementById("scoreTable").removeChild(temp[i]);
+                
             }
         }
 
@@ -82,6 +87,55 @@ window.onclick = function(event) {
     }
 }
 
+function tabela(){
+    let tbl = document.createElement('table');
+    tbl.id = "tableScore";
+    let tr = document.createElement('tr');
+
+    // For first Row
+    let th1 = document.createElement('th');
+    th1.appendChild(document.createTextNode("Nick"));
+
+    let th2 = document.createElement('th');
+    th2.appendChild(document.createTextNode("Victories"));
+
+    let th3 = document.createElement('th');
+    th3.appendChild(document.createTextNode("Games"));
+
+    tr.appendChild(th1);
+    tr.appendChild(th2);
+    tr.appendChild(th3);
+
+    tbl.appendChild(tr);
+
+    for(let i = 0; i < rank.length; i++) {
+        let tr = document.createElement('tr');
+
+        for(let j = 0; j < 3; j++) {
+            let td = document.createElement('td');
+
+            switch(j) {
+                case 0:
+                    td.appendChild(document.createTextNode(rank.nick));
+                    break;
+
+                case 1:
+                    td.appendChild(document.createTextNode(rank.win));
+                    break;
+                
+                case 2:
+                    td.appendChild(document.createTextNode(rank.games));
+                    break;
+            }
+            
+            tr.appendChild(td);
+        }
+
+        tbl.appendChild(tr);
+    }
+
+    document.getElementById("scoreTable").appendChild(tbl);
+}
 
 function ranking(){
     fetch(new URL("http://twserver.alunos.dcc.fc.up.pt:9064/ranking"), {
@@ -97,7 +151,7 @@ function ranking(){
     })
     .then(function(data){
         console.log(data);
-        /*let tbl = document.createElement('table');
+        let tbl = document.createElement('table');
         tbl.id = "tableScore";
         let tr = document.createElement('tr');
 
@@ -117,7 +171,7 @@ function ranking(){
 
         tbl.appendChild(tr);
 
-        for(let i = 0; i < data.ranking.length; i++) {
+        for(let i = 0; i < data.length; i++) {
             let tr = document.createElement('tr');
 
             for(let j = 0; j < 3; j++) {
@@ -143,6 +197,6 @@ function ranking(){
             tbl.appendChild(tr);
         }
 
-        document.getElementById("scoreTable").appendChild(tbl);*/
+        document.getElementById("scoreTable").appendChild(tbl);
     })
 }
