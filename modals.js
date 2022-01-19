@@ -89,7 +89,7 @@ function ranking(){
         body: JSON.stringify({})
     })
     .then(function(response){
-        if(response.ok) {
+        if(response.status===200) {
             return response.json();
         } else{
            console.log('Erro: ' + response.status + ": " +  response.statusText);  

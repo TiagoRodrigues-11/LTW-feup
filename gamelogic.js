@@ -830,14 +830,17 @@ function register(email, password){
         body: JSON.stringify(registar),
     })
     .then(function(response) {
-        if(response.ok) {
+        if(response.status===200) {
             nick=email;
             pass=password;
             login=true;
             alert("You´re Logged In!");
-        } else{
+        } else if(response.status===401){
             alert("Email or Password dont record our match");
             console.log('Erro: ' + response.status + ": " +  response.statusText);  
+         }
+         else{
+            console.log('Erro: ' + response.status + ": " +  response.statusText);
          }
      })
     .catch(console.log);
