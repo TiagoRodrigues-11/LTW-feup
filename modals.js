@@ -74,12 +74,12 @@ window.onclick = function(event) {
 
 
 function ranking(){
-    fetch(new URL("http://localhost:9064/ranking"), {
+    fetch(new URL("http://twserver.alunos.dcc.fc.up.pt:9064/ranking"), {
         method: "POST",
         body: JSON.stringify({})
     })
     .then(function(response){
-        if(response.ok) {
+        if(response.status===200) {
             return response.json();
         } else{
            console.log('Erro: ' + response.status + ": " +  response.statusText);  
