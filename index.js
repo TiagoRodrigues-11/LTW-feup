@@ -64,6 +64,15 @@ function ranking(response){
 
             if(answer.style === 'plain')
                 response.end();
+        } else {
+            let dados = [{nick:"Jogador", win: 0, games: 0}];
+            fs.writeFile('user.json', JSON.stringify(dados), function(err) {
+                if(!err) 
+                    answer.status = 200;
+                else 
+                    answer.status = 400;
+
+            });
         }
     });
 

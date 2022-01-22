@@ -42,7 +42,7 @@ for(let i = 0; i < btn.length; i++){
                     rank['win'] = localStorage.getItem('win');
                     rank['games'] = localStorage.getItem('games');
                 }
-                tabela();
+                tabela(rank);
                 console.log(rank);
             }
             else{
@@ -87,7 +87,8 @@ window.onclick = function(event) {
     }
 }
 
-function tabela(){
+function tabela(rank){
+    console.log(rank);
     let tbl = document.createElement('table');
     tbl.id = "tableScore";
     let tr = document.createElement('tr');
@@ -108,37 +109,34 @@ function tabela(){
 
     tbl.appendChild(tr);
 
-    for(let i = 0; i < rank.length; i++) {
-        let tr = document.createElement('tr');
+    let tr1 = document.createElement('tr');
 
-        for(let j = 0; j < 3; j++) {
-            let td = document.createElement('td');
+    for(let j = 0; j < 3; j++) {
+        let td = document.createElement('td');
 
-            switch(j) {
-                case 0:
-                    td.appendChild(document.createTextNode(rank.nick));
-                    break;
+        switch(j) {
+            case 0:
+                td.appendChild(document.createTextNode(rank.nick));
+                break;
 
-                case 1:
-                    td.appendChild(document.createTextNode(rank.win));
-                    break;
-                
-                case 2:
-                    td.appendChild(document.createTextNode(rank.games));
-                    break;
-            }
+            case 1:
+                td.appendChild(document.createTextNode(rank.win));
+                break;
             
-            tr.appendChild(td);
+            case 2:
+                td.appendChild(document.createTextNode(rank.games));
+                break;
         }
-
-        tbl.appendChild(tr);
+        
+        tr1.appendChild(td);
     }
 
+    tbl.appendChild(tr1);
     document.getElementById("scoreTable").appendChild(tbl);
 }
 
 function ranking(){
-    fetch(new URL("http://twserver.alunos.dcc.fc.up.pt:9064/ranking"), {
+    fetch(new URL("http://localhost:9064/ranking"), {
         method: "POST",
         body: JSON.stringify({})
     })
