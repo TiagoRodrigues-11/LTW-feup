@@ -67,7 +67,6 @@ function ranking(response){
             response.writeHead(answer.status, headers[answer.style]);
             response.write(data.toString());
 
-            console.log(data);
 
             if(answer.style === 'plain')
                 response.end();
@@ -88,22 +87,20 @@ function ranking(response){
 function update_rank(request, response){
     const body = [];
     let query = {};
-
     request
         .on('data', (chunk) => { body.push(chunk)  })
         .on('end', () => {
             try { 
-                query = JSON.parse(body);
-                console.log("query: ");  
-                console.log(query); 
-    
+                query = JSON.parse(body); 
                 let dados = [];
                 let user = false;
                 let answer = {status: 200};
                 fs.readFile('ranking.json',function(err,data){
                     if(!err){
                         if(data.length !== 0){
+
                             dados = JSON.parse(data.toString());
+
                             for(let i=0; i<dados.length; i++){
                                 if(dados[i].nick===query.nick){
                                     user = true;
@@ -119,8 +116,8 @@ function update_rank(request, response){
                             }
 
                         }
-                        console.log(dados);
-                        dados.sort((a, b) => ((a.win/a.game) > (b.win/b.game)) ? 1 : (((b.win/b.game) < (a.win/a.game)) ? -1 : 0));
+
+                        dados.sort((a, b) => ((a.win/a.game) < (b.win/b.game)) ? 1 : (((b.win/b.game) < (a.win/a.game)) ? -1 : 0));
                         fs.writeFile('ranking.json', JSON.stringify(dados.slice(0, 10)), function(err){
                             if(!err){
                                 answer.status=200;
@@ -133,7 +130,6 @@ function update_rank(request, response){
                     else{
                         let r = {nick: query.nick, win:query.win ? 1 : 0, game: 1}
                         dados.push(r);
-                        console.log(dados);
                         fs.writeFile('ranking.json', JSON.stringify(dados.slice(0, 10)), function(err){
                             if(!err){
                                 answer.status=200;

@@ -279,7 +279,14 @@ table, th, td {
 
 .form__input,
 .form__button{
+  margin: auto;
   font: 500 1rem 'Quicksand', sans-serif;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .form--hidden{
@@ -295,6 +302,7 @@ table, th, td {
 }
 
 .form__title{
+  
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -344,7 +352,8 @@ table, th, td {
 }
 
 .form__button{
-  margin-left: 35%;
+  width: 15%;
+  margin: auto;
   padding: 1rem 2rem;
   font-weight: bold;
   font-size: 1.1rem;

@@ -391,7 +391,6 @@ class Game {
         this.topRow = new Row(ADVERSARY, clone);
         this.turn = turn;
         if(!clone) this.setup();
-        rank.games++;
         fixedUp.appendChild(turnBox);
     }
 
@@ -723,9 +722,9 @@ function terminate(force = false) {
 
 function update_local(){ 
     if(mode!==PVP){   
+        rank.games++;
         localStorage.setItem('win', rank.win);
         localStorage.setItem('games', rank.games);
-        console.log(rank);
     }
 }
 
@@ -926,7 +925,7 @@ function leave(jogo, email, password){
         if(response.ok) {
             return response.json();
         } else{
-           console.log('erro: ' + response.status + ": " +  response.statusText);  
+           console.log('Erro: ' + response.status + ": " +  response.statusText);  
         }
     })
     .catch(console.log);
@@ -948,7 +947,7 @@ function notify(email, password, jogo, move){
         if(response.ok) {
             return response.json();
         } else{
-           console.log('erro: ' + response.status + ": " +  response.statusText);  
+           console.log('Erro: ' + response.status + ": " +  response.statusText);  
         }
      })
     .catch(console.log);
@@ -958,10 +957,10 @@ function update(jogo, email){
     eventSource = new EventSource("http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=" + encodeURIComponent(email) + "&game=" + encodeURIComponent(jogo));
     eventSource.onmessage = function(event){
         const data = JSON.parse(event.data);
-        console.log(data);
         
         if(data.hasOwnProperty("board")){
             if(startGame) {
+                let k = Object.keys(data.board.sides);
                 game = new Game();
                 startGame=false;
             }
@@ -975,6 +974,7 @@ function update(jogo, email){
                 turnBox.innerHTML="Your turn"
             }
             else{
+
                 game.turn=ADVERSARY;
                 turnBox.innerHTML="Adv turn"
             }
