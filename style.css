@@ -216,7 +216,7 @@ table, th, td {
 
 .configuracaowindow{
   width: 25%;
-  height: 70%;
+  height: 95%;
   margin:auto;
   background-color: antiquewhite; 
   padding: 20px;
@@ -237,7 +237,7 @@ table, th, td {
   margin-left: 20%;
   background-color: rgb(223, 194, 156);
   margin-bottom: 5%;
-  height: 12%;
+  height: 9%;
   width: 35%;
 }
 
@@ -386,4 +386,37 @@ table, th, td {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+.turnBox {
+  position:absolute;
+
+  width: 15%;
+  height: 5%;
+  background: radial-gradient( #D5B190,#5e3f17);
+  opacity: 0.5;
+  border-radius: 25%;
+  transform: translateY(-40px);
+  font-size: xx-large;
+  color: black;
+  text-align: center;
+}
+
+
+.winnerBox {
+  position:absolute;
+  width: 35%;
+  height: 20%;
+  background: radial-gradient( #D5B190,#5e3f17);
+  opacity: 0.7;
+  border-radius: 25%;
+  margin: auto auto;
+}
+
+.winnerText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  color: black;
 }

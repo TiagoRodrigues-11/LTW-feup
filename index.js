@@ -32,7 +32,7 @@ http.createServer(function (request, response) {
                     break;
                 default:
                     response.writeHead(404, headers['plain']);
-                    response.end;
+                    response.end();
                     break;
 
             }
@@ -40,7 +40,7 @@ http.createServer(function (request, response) {
 
         default:
             response.writeHead(400, headers['plain']);
-            response.end;
+            response.end();
             break;
     }
 
@@ -60,7 +60,7 @@ function ranking(response){
                 answer.style = 'plain';
 
             response.writeHead(answer.status, headers[answer.style]);
-            response.write(data.toString());
+            response.write(JSON.stringify(data));
 
             if(answer.style === 'plain')
                 response.end();
@@ -71,7 +71,7 @@ function ranking(response){
 
 function register(request, response){
     const body = [];
-    let answer = {};
+    let answer = {status: 200};
     let query = {};
     let login = false;
 
@@ -84,7 +84,7 @@ function register(request, response){
             try { 
                 query = JSON.parse(body);
                 query.password = hash(query.password);
-                console.log(query);
+
                 let dados = [];
  
                 fs.readFile('user.json',function(err,data) {
@@ -92,12 +92,12 @@ function register(request, response){
                     if(!err) {
                         if(data.length !== 0) {
                             dados = JSON.parse(data.toString());
-                            //console.log("Dados:" + dados);
+
                             for(let i = 0; i < dados.length && !login; i++) {
+
                                 if(dados[i].nick === query.nick) {
                                     
                                     login = true;
-                                    console.log(dados[i]);
                                     if(dados[i].password === query.password) {
                                         answer.status = 200;
                                     } else {
@@ -106,40 +106,45 @@ function register(request, response){
                                 }
                             }
                         }
-                        console.log(answer.status)
-                        if(!login) {
-                            dados.push(query);
-                        }
-                        dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
-                        console.log(dados);
-                        fs.writeFile('user.json', JSON.stringify(dados), function(err) {
-                            if(!err) {
-                                answer.status = 200;
-                                
-                            } else {
-                                answer.status = 400;
+
+                        if(answer.status !== 401) {
+                            if(!login) {
+                                dados.push(query);
                             }
-                            console.log(answer);
-                        });
+                            dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
+
+                            fs.writeFile('user.json', JSON.stringify(dados), function(err) {
+                                if(err) {
+                                    answer.status = 400;
+                                } else {
+                                    answer.status = 200;
+                                }
+                            });
+                        }
+
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
 
                     }
                     else{
-                        console.log("ficheiro inexistente");
+                        console.log("Don't exist file!");
                         if(!login) {
                             dados.push(query);
                         }
                         dados.sort((a, b) => (a.nick > b.nick) ? 1 : ((b.nick > a.nick) ? -1 : 0));
-                        console.log(dados);
+
                         fs.writeFile('user.json', JSON.stringify(dados), function(err) {
-                            if(!err) {
+                            if(!err) 
                                 answer.status = 200;
-                                
-                            } else {
+                            else 
                                 answer.status = 400;
-                            }
-                            console.log(answer);
+ 
                         });
+                        
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
                     }
+
                     
                 });
                 
