@@ -982,15 +982,46 @@ function update(jogo, email){
         }
 
         if(data.hasOwnProperty("winner")){
-            if(data.winner==null && !data.hasOwnProperty("board")) alert("Desistiu do jogo")
+            if(data.winner==null && !data.hasOwnProperty("board")){
+                 alert("Desistiu do jogo")
+            }
             else{
-                if(data.winner==nick) winner=PLAYER;
-                else winner=ADVERSARY;
+                if(data.winner==nick){
+                    winner=PLAYER;
+                    update_rank(nick, true);
+                }
+                else{
+                    winner=ADVERSARY;
+                    update_rank(nick, false);
+                }
                 endGame = true;
-                if(terminate() || endGame)
+                if(terminate() || endGame){
                     decideWinner(winner);
+                    
+                }
             }
         }
         
     }
+}
+
+function update_rank(email, win){
+    const rank = {
+        "nick": email,
+        "win": win
+    }
+
+    fetch("http://twserver.alunos.dcc.fc.up.pt:9064/updaterank",{
+        method: 'POST',
+        body: JSON.stringify(rank),
+    })
+    .then(function(response) {
+        if(response.status===200) {
+            console.log("Update feito");
+        } else{
+           console.log('erro: ' + response.status + ": " +  response.statusText);  
+        }
+     })
+    .catch(console.log);
+
 }

@@ -30,6 +30,9 @@ http.createServer(function (request, response) {
                 case '/register':
                     register(request, response);
                     break;
+                case '/updaterank':
+                    update_rank(request, response);
+                    break;
                 default:
                     response.writeHead(404, headers['plain']);
                     response.end();
@@ -47,6 +50,8 @@ http.createServer(function (request, response) {
     
 
 }).listen(PORT);
+
+
 
 function ranking(response){
 
@@ -76,6 +81,71 @@ function ranking(response){
         }
     });
 
+}
+
+function update_rank(request, response){
+    const body = [];
+    let query = {};
+
+    request
+        .on('data', (chunk) => { body.push(chunk)  })
+        .on('end', () => {
+            try { 
+                query = JSON.parse(body);
+                console.log("query: ");  
+                console.log(query); 
+    
+                let dados = [];
+                let user = false;
+                let answer = {status: 200};
+                fs.readFile('ranking.json',function(err,data){
+                    if(!err){
+                        if(data.length !== 0){
+                            dados = JSON.parse(data.toString());
+                            for(let i=0; i<dados.length; i++){
+                                if(dados[i].nick===query.nick){
+                                    user = true;
+                                    dados[i].game++;
+                                    if(query.win===true)
+                                        dados[i].win++;
+                                    break;
+                                }
+                            }
+                            if(!user) {
+                                let r = {nick: query.nick, win:query.win ? 1 : 0, game: 1}
+                                dados.push(r);
+                            }
+
+                        }
+                        console.log(dados);
+                        dados.sort((a, b) => ((a.win/a.game) > (b.win/b.game)) ? 1 : (((b.win/b.game) < (a.win/a.game)) ? -1 : 0));
+                        fs.writeFile('ranking.json', JSON.stringify(dados.slice(0, 10)), function(err){
+                            if(!err){
+                                answer.status=200;
+                            }
+                            else answer.status=400;
+                        });
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
+                    }
+                    else{
+                        let r = {nick: query.nick, win:query.win ? 1 : 0, game: 1}
+                        dados.push(r);
+                        console.log(dados);
+                        fs.writeFile('ranking.json', JSON.stringify(dados.slice(0, 10)), function(err){
+                            if(!err){
+                                answer.status=200;
+                            }
+                            else answer.status=400;
+                        });
+                        response.writeHead(answer.status, headers['plain']);
+                        response.end();
+                    }
+                });
+            }
+            catch(err) {  /* erros de JSON */ }
+        })
+        .on('error', (err) => { console.log(err.message); });
 }
 
 function register(request, response){

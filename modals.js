@@ -142,12 +142,13 @@ function ranking(){
     })
     .then(function(response){
         if(response.status===200) {
-            return response.json();
+            return JSON.parse(response.json());
         } else{
            console.log('Erro: ' + response.status + ": " +  response.statusText);  
         }
     })
     .then(function(data){
+        data = JSON.parse(data);
         console.log(data);
         let tbl = document.createElement('table');
         tbl.id = "tableScore";
