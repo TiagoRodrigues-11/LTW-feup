@@ -88,7 +88,6 @@ window.onclick = function(event) {
 }
 
 function tabela(rank){
-    console.log(rank);
     let tbl = document.createElement('table');
     tbl.id = "tableScore";
     let tr = document.createElement('tr');
@@ -136,7 +135,7 @@ function tabela(rank){
 }
 
 function ranking(){
-    fetch(new URL("http://localhost:9064/ranking"), {
+    fetch(new URL("http://twserver.alunos.dcc.fc.up.pt:9064/ranking"), {
         method: "POST",
         body: JSON.stringify({})
     })
@@ -179,15 +178,15 @@ function ranking(){
 
                 switch(j) {
                     case 0:
-                        td.appendChild(document.createTextNode(data.ranking[i].nick));
+                        td.appendChild(document.createTextNode(data[i].nick));
                         break;
 
                     case 1:
-                        td.appendChild(document.createTextNode(data.ranking[i].victories));
+                        td.appendChild(document.createTextNode(data[i].victories));
                         break;
                     
                     case 2:
-                        td.appendChild(document.createTextNode(data.ranking[i].games));
+                        td.appendChild(document.createTextNode(data[i].games));
                         break;
                 }
                 

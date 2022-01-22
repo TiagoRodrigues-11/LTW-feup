@@ -725,6 +725,7 @@ function update_local(){
     if(mode!==PVP){   
         localStorage.setItem('win', rank.win);
         localStorage.setItem('games', rank.games);
+        console.log(rank);
     }
 }
 
@@ -785,6 +786,7 @@ function decideWinner(winner = null) {
     fixedUp.appendChild(winnerBox);
     playButton.innerHTML = "Limpar";
 
+    update_local();
     // Change variables
     game.turn = null;
     startGame=true;
